@@ -1,15 +1,13 @@
-name: Publish Gear Hunter addon release
+name: Publish Gear Hunter optimized addon release
 on:
   push:
     branches: [main]
     paths:
       - 'GearHunter/**'
-      - '.github/workflows/publish-gear-hunter.yml'
   workflow_dispatch:
 
 permissions:
   contents: write
-
 concurrency:
   group: release-GearHunter
   cancel-in-progress: false
@@ -21,24 +19,21 @@ jobs:
       - name: Check out addon source
         uses: actions/checkout@v4
 
-      - name: Check completeness and version
+      - name: Validate addon version and completeness
         shell: bash
         run: |
           set -euo pipefail
-          addon="GearHunter"
+          addon=GearHunter
           toc="$addon/$addon.toc"
           test -f "$toc"
           version="$(sed -nE 's/^## Version:[[:space:]]*([^[:space:]]+).*/\1/p' "$toc" | head -1 | tr -d '\r')"
-          [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Invalid ## Version in $toc"; exit 1; }
+          [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Invalid ## Version"; exit 1; }
           count="$(find "$addon" -type f | wc -l)"
-          if [ "$count" -lt 185 ]; then
-            echo "Refusing release: only $count files in $addon (require 185 or more). Upload the complete addon source first."
-            exit 1
-          fi
+          test "$count" -ge 185 || { echo "Incomplete source: $count files"; exit 1; }
           tga_count="$(find "$addon/Art" -type f -name '*.tga' | wc -l)"
-          [ "$tga_count" -eq 157 ] || { echo "Artwork incomplete: expected 157 TGA files; found $tga_count"; exit 1; }
+          test "$tga_count" -eq 157 || { echo "Incomplete artwork: $tga_count TGA files"; exit 1; }
           while IFS= read -r file; do
-            file="${file%$'\r'}"
+            file="$(printf '%s' "$file" | tr -d '\r')"
             case "$file" in
               *.lua|*.xml)
                 test -f "$addon/$file" || { echo "Missing TOC-listed file: $addon/$file"; exit 1; }
@@ -47,31 +42,42 @@ jobs:
           done < "$toc"
           echo "VERSION=$version" >> "$GITHUB_ENV"
           echo "TAG=v$version" >> "$GITHUB_ENV"
-          echo "Validated $count addon files for version $version"
 
-      - name: Package complete addon folder
+      - name: Install image conversion tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq imagemagick
+
+      - name: Compress artwork and package full addon
         shell: bash
         run: |
           set -euo pipefail
-          cd "$GITHUB_WORKSPACE"
-          zip -qr "$RUNNER_TEMP/GearHunter-$TAG.zip" "GearHunter/"
-          (cd "$RUNNER_TEMP" && sha256sum "GearHunter-$TAG.zip" > "GearHunter-$TAG.zip.sha256")
+          mkdir -p "$RUNNER_TEMP/package"
+          cp -a GearHunter "$RUNNER_TEMP/package/"
+          python3 tools/optimize_gearhunter_art.py "$RUNNER_TEMP/package/GearHunter"
+          count="$(find "$RUNNER_TEMP/package/GearHunter/Art" -type f -name '*.blp' | wc -l)"
+          test "$count" -ge 100 || exit 1
+          cd "$RUNNER_TEMP/package"
+          zip -qr1 "$RUNNER_TEMP/GearHunter-$TAG.zip" GearHunter/
           unzip -tq "$RUNNER_TEMP/GearHunter-$TAG.zip"
+          size="$(stat -c%s "$RUNNER_TEMP/GearHunter-$TAG.zip")"
+          test "$size" -lt 100000000 || { echo "Package still too large"; exit 1; }
+          echo "Verified optimized package: $size bytes"
+          (cd "$RUNNER_TEMP" && sha256sum "GearHunter-$TAG.zip" > "GearHunter-$TAG.zip.sha256")
 
-      - name: Publish GitHub Release
+      - name: Publish release with instructions
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
         run: |
           set -euo pipefail
           if gh release view "$TAG" >/dev/null 2>&1; then
-            echo "Release $TAG already exists. Bump the addon TOC version for the next update."
+            echo "Existing release. Increment addon version before publishing."
             exit 1
           fi
           gh release create "$TAG" \
             "$RUNNER_TEMP/GearHunter-$TAG.zip" \
             "$RUNNER_TEMP/GearHunter-$TAG.zip.sha256" \
             --title "Gear Hunter $TAG" \
-            --generate-notes \
+            --notes-file GearHunter/RELEASE_NOTES.md \
             --target "$GITHUB_SHA"
-          echo "Release published: $TAG"
