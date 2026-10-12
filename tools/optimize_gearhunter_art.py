@@ -6,7 +6,7 @@ HEADER=1172
 def convert(path,cmd):
     with tempfile.TemporaryDirectory(prefix="gh-blp-") as td:
         dest=Path(td)/"out.dds"
-        run=subprocess.run([cmd,str(path),"-define","dds:mipmaps=0","-define","dds:compression=dxt5","-define","dds:cluster-fit=false",str(dest)],capture_output=True,text=True)
+        run=subprocess.run([cmd,str(path),"-alpha","on","-define","dds:mipmaps=0","-define","dds:compression=dxt5","-define","dds:cluster-fit=false",str(dest)],capture_output=True,text=True)
         if run.returncode: raise RuntimeError(str(path)+": "+run.stderr[:500])
         data=dest.read_bytes()
     if len(data)<128 or data[:4]!=b"DDS " or data[84:88]!=b"DXT5":
