@@ -1,0 +1,72 @@
+name: Import original Gear Hunter artwork
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/bootstrap-gear-hunter-artwork.yml'
+  workflow_dispatch:
+  schedule:
+    # Retry daily until the verified original package is available.
+    - cron: '17 11 * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gearhunter-artwork-bootstrap
+  cancel-in-progress: false
+
+jobs:
+  import:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Check whether artwork has already been imported
+        shell: bash
+        run: |
+          if [ "$(find GearHunter/Art -type f -name '*.tga' 2>/dev/null | wc -l)" -ge 157 ]; then
+            echo "Artwork already imported: no action necessary."
+            echo "NEED_IMPORT=no" >> "$GITHUB_ENV"
+          else
+            echo "NEED_IMPORT=yes" >> "$GITHUB_ENV"
+          fi
+
+      - name: Download and verify original Gear Hunter 0.11.7 package
+        if: env.NEED_IMPORT == 'yes'
+        shell: bash
+        env:
+          SOURCE_URL: https://gearhunter.net/downloads/GearHunter-v0.11.7.zip
+          EXPECTED_SHA256: 7407bcb7a4ef932f816860a3eaf0815a613f12f0e6d06c7104e6276f70934e46
+        run: |
+          set -euo pipefail
+          echo "Fetching the original verified release package from the project's existing website."
+          curl --fail --location --retry 2 --connect-timeout 20 \
+            --max-time 900 "$SOURCE_URL" -o "$RUNNER_TEMP/gearhunter-original.zip"
+          printf '%s  %s\n' "$EXPECTED_SHA256" "$RUNNER_TEMP/gearhunter-original.zip" | sha256sum -c -
+          unzip -tq "$RUNNER_TEMP/gearhunter-original.zip"
+          mkdir -p "$RUNNER_TEMP/source"
+          unzip -q "$RUNNER_TEMP/gearhunter-original.zip" 'GearHunter/*' -d "$RUNNER_TEMP/source"
+          count="$(find "$RUNNER_TEMP/source/GearHunter/Art" -type f -name '*.tga' | wc -l)"
+          [ "$count" -eq 157 ] || { echo "Expected 157 original art files, found $count"; exit 1; }
+          grep -q '^## Version: 0.11.7' "$RUNNER_TEMP/source/GearHunter/GearHunter.toc"
+          cp -a "$RUNNER_TEMP/source/GearHunter/Art" GearHunter/
+          echo "Imported $count verified Gear Hunter artwork files."
+
+      - name: Commit artwork for the standard addon publisher
+        if: env.NEED_IMPORT == 'yes'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "Gear Hunter Release Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add GearHunter/Art
+          if git diff --cached --quiet; then
+            echo "No new assets to import."
+            exit 0
+          fi
+          git commit -m "Import verified Gear Hunter 0.11.7 artwork"
+          git push origin HEAD:main
+          echo "Standard Gear Hunter release workflow will package the complete addon automatically."
