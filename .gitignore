@@ -1,0 +1,20 @@
+# Keep the addon repositories limited to in-game addon sources and assets.
+.DS_Store
+Thumbs.db
+*.log
+*.sqlite
+*.sqlite3
+*.db
+*.db-shm
+*.db-wal
+.env
+.env.*
+*SECRET*
+*PRIVATE-SETUP-KEY*
+*install-key.php
+private/
+admin/
+website/
+node_modules/
+# Release ZIP packages belong in GitHub Releases, not tracked Git files.
+*.zip
