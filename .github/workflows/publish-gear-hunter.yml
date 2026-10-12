@@ -29,9 +29,10 @@ jobs:
           version="$(sed -nE 's/^## Version:[[:space:]]*([^[:space:]]+).*/\1/p' "$toc" | head -1 | tr -d '\r')"
           [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Invalid ## Version"; exit 1; }
           count="$(find "$addon" -type f | wc -l)"
-          test "$count" -ge 185 || { echo "Incomplete source: $count files"; exit 1; }
+          test "$count" -ge 164 || { echo "Incomplete source: $count files"; exit 1; }
           tga_count="$(find "$addon/Art" -type f -name '*.tga' | wc -l)"
-          test "$tga_count" -eq 157 || { echo "Incomplete artwork: $tga_count TGA files"; exit 1; }
+          test "$tga_count" -eq 136 || { echo "Expected 136 active images: $tga_count"; exit 1; }
+          test "$(find "$addon/Art" -maxdepth 1 -type f -name '*.tga' | wc -l)" -eq 0 || { echo "Obsolete image at Art root"; exit 1; }
           while IFS= read -r file; do
             file="$(printf '%s' "$file" | tr -d '\r')"
             case "$file" in
@@ -56,7 +57,7 @@ jobs:
           cp -a GearHunter "$RUNNER_TEMP/package/"
           python3 tools/optimize_gearhunter_art.py "$RUNNER_TEMP/package/GearHunter"
           count="$(find "$RUNNER_TEMP/package/GearHunter/Art" -type f -name '*.blp' | wc -l)"
-          test "$count" -ge 100 || exit 1
+          test "$count" -ge 80 || exit 1
           cd "$RUNNER_TEMP/package"
           zip -qr1 "$RUNNER_TEMP/GearHunter-$TAG.zip" GearHunter/
           unzip -tq "$RUNNER_TEMP/GearHunter-$TAG.zip"

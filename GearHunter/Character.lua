@@ -32,7 +32,7 @@ local function tint(col,m)
     return {clamp(col[1]*m,0,1),clamp(col[2]*m,0,1),clamp(col[3]*m,0,1),1}
 end
 
-GH.backgroundModes={"Auto","Class","Race","Custom","Off"}
+GH.backgroundModes={"Auto","Class","Custom","Off"}
 
 GH.specThemes={
     [258]={key="SHADOW_PRIEST",name="Shadow Priest",icon="Interface\\Icons\\Spell_Shadow_ShadowWordPain",primary={0.67,0.49,1.00},secondary={0.23,0.15,0.43},base={0.03,0.03,0.08},scene="void_sanctum"},
@@ -102,6 +102,8 @@ function GH:GetBackgroundPrefs()
         self.db.characterBackgrounds[key]={bgMode="Auto",bgIntensity=3,bgCustomTheme="PRIEST"}
     end
     local p=self.db.characterBackgrounds[key]
+    -- Retire older race backdrops while keeping other character settings.
+    if p.bgMode=="Race" then p.bgMode="Auto" end
     -- v0.8.3 artwork repair: discard the old Character scene mode ONCE,
     -- avoiding stale Custom/Race selections left by previous builds.
     if not p.v082ArtworkMigration then
@@ -164,7 +166,6 @@ end
 -- Every supported specialization has two ACTUAL, independently rendered scene
 -- textures. The UI simply chooses a file: it never uses faction color tinting.
 local ART_ROOT = "Interface\\AddOns\\GearHunter\\Art\\Scenes\\"
-local FALLBACK_ROOT = "Interface\\AddOns\\GearHunter\\Art\\"
 local SPEC_CLASS = {
     -- WARRIOR
     [71]="WARRIOR",[72]="WARRIOR",[73]="WARRIOR",
@@ -208,12 +209,6 @@ local CLASS_DEFAULT_SPEC = {
     DEMONHUNTER=577,
     EVOKER=1467,
 }
-local RACE_FALLBACK = {
-    NightElf="DruidGrove.tga",VoidElf="ShadowSanctum.tga",
-    Orc="WarriorForge.tga",Scourge="DeathKnightCitadel.tga",
-    BloodElf="PaladinChapel.tga",Tauren="ShamanShrine.tga",
-    Human="PaladinChapel.tga",Dwarf="WarriorForge.tga",
-}
 function GH:GetCharacterScene()
     local mode=self:GetBackgroundOption("bgMode","Auto")
     if mode=="Off" then return nil,"disabled" end
@@ -226,10 +221,6 @@ function GH:GetCharacterScene()
     -- opposite faction during login. Re-evaluate on login + spec change.
     if not class or (faction~="Alliance" and faction~="Horde") then
         return nil,"waiting for player / faction",class,specID,race,faction
-    end
-    if mode=="Race" then
-        local old=RACE_FALLBACK[race]
-        if old then return FALLBACK_ROOT..old,old,class,specID,race,faction end
     end
     local targetClass=(self.tab=="Character" and self.previewClass) or class
     if mode=="Custom" and not self.previewClass then
@@ -253,6 +244,7 @@ function GH:UpdateCharacterBackground()
     local image,file,class,specID,race,faction,selectedID=self:GetCharacterScene()
     if not image then
         bg.scene:Hide()
+        bg.scene:SetTexture(nil) -- never retain an old scene after switching modes
         bg.currentScene=nil
         if self.characterModelBack then
             self.characterModelBack:SetBackdropColor(0.025,0.025,0.035,1)

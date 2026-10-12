@@ -1,7 +1,7 @@
 -- Gear Hunter 0.3.1 - Retail (Midnight). No third-party dependencies.
 local addonName, GH = ...
 _G.GearHunter = GH
-GH.version = "0.11.8"
+GH.version = "0.11.9"
 GH.items = {}
 GH.equipped = {}
 GH.slotDefs = {
@@ -86,6 +86,17 @@ function GH:InitDatabase()
         end
         self.db.options.sceneMigration080=true
     end
+    -- v0.11.9: migrate all obsolete Race backgrounds to HD Auto scenes.
+    -- Preserve Custom, Class, Off, intensity, equipment, and other settings.
+    if not self.db.options.sceneMigration0119 then
+        if type(self.db.characterBackgrounds)=="table" then
+            for _,pref in pairs(self.db.characterBackgrounds) do
+                if type(pref)=="table" and pref.bgMode=="Race" then pref.bgMode="Auto" end
+            end
+        end
+        if self.db.options.bgMode=="Race" then self.db.options.bgMode="Auto" end
+        self.db.options.sceneMigration0119=true
+    end
     if type(self.db.pins) ~= "table" then self.db.pins = {} end
     if type(self.db.instancePins) ~= "table" then self.db.instancePins = {} end
     -- Tonight limits only affect the Tonight view, never the all-upgrades list.
@@ -95,7 +106,7 @@ function GH:InitDatabase()
     if not ({[17]=true,[14]=true,[15]=true,[16]=true})[self.db.options.tonightRaid] then
         self.db.options.tonightRaid=15
     end
-    self.db.options.bgMode = ({Auto=true,Class=true,Race=true,Custom=true,Off=true})[tostring(self.db.options.bgMode)] and self.db.options.bgMode or "Auto"
+    self.db.options.bgMode = ({Auto=true,Class=true,Custom=true,Off=true})[tostring(self.db.options.bgMode)] and self.db.options.bgMode or "Auto"
     self.db.options.bgCustomTheme = tostring(self.db.options.bgCustomTheme or "PRIEST")
     self.db.options.bgIntensity = tonumber(self.db.options.bgIntensity) or 2
     if self.db.options.bgIntensity < 1 or self.db.options.bgIntensity > 3 then self.db.options.bgIntensity=2 end

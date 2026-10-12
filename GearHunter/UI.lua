@@ -96,7 +96,7 @@ local function renderDetail(self)
     if self.tab=="Settings" then
         d.title:SetText("DATA AND LIMITS")
         d.name:SetText("Gear Hunter settings")
-        d.ilevel:SetText("Level-aware equipment / v0.11.8")
+        d.ilevel:SetText("Level-aware equipment / v0.11.9")
         d.icon:SetTexture(GH_ICON_ROOT.."settings.tga")
         d.descr:SetText("Data from your equipped gear and Blizzard's Encounter Journal.\n\nTonight is a difficulty preference, not eligibility or guaranteed loot.\n\nBest Item Level is not simulated Best in Slot.\n\nOnly verified sources can open map pins.")
     elseif not rec then

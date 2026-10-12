@@ -1,19 +1,18 @@
-## What's new in Gear Hunter v0.11.8
+## Gear Hunter v0.11.9 — Clean HD Character Backgrounds
 
-**Much smaller download; all the familiar Gear Hunter features are retained.**
+This update retires the first-generation character-screen artwork.
 
-- Compressed 109 large artistic textures into the native World of Warcraft BLP2/DXT5 format.
-- Kept 48 small artwork files (including icons and small showcase pieces) in their original TGA format.
-- The download is expected to be about 50 MB instead of 240.7 MB, based on a locally tested equivalent build.
-- No gear features, saved character data, or optional Companion functions were intentionally removed.
+- Removed 21 obsolete TGA backgrounds and eliminated the Race background mode that could still select them.
+- All characters with the retired Race preference automatically switch to Auto. Other preferences and saved gear remain unchanged.
+- When no valid scene is selected, the previous texture is cleared so it cannot linger.
+- Kept 80 high-resolution Alliance/Horde specialization scenes and all existing class previews, icons and Midnight frames.
+- Kept compact BLP2 artwork compression for a smaller ZIP.
 
-### How to install or upgrade
-1. Fully exit World of Warcraft.
-2. Delete only the old `_retail_/Interface/AddOns/GearHunter` folder, so unused legacy textures do not remain.
-3. Extract the new ZIP into `_retail_/Interface/AddOns/`. The result should be an `AddOns/GearHunter` directory.
-4. Start the game. Open Gear Hunter with `/gh`; the `?` button shows the full in-game release history.
-5. Keep your `WTF` folder: it stores saved addon settings and should not be deleted.
+### Installation (important)
+1. Exit World of Warcraft completely.
+2. Delete **only** the old `_retail_/Interface/AddOns/GearHunter` folder before installing. Otherwise the older image files may remain.
+3. Extract the new `GearHunter-v0.11.9.zip` into `_retail_/Interface/AddOns/`.
+4. Restart WoW and open `/gh`, then Character. Change Theme Mode between Auto, Class, Custom or Off.
+5. Do **not** delete the `WTF` folder; it contains your saved character settings.
 
-The optional Windows GearHub Companion remains optional. If you encounter a missing background or frame artwork, please report your character class/specialization, faction, and a screenshot through gearhunter.net.
-
-Build note: this release uses forced RGBA input to ensure consistent DXT5 artwork encoding on Linux GitHub runners.
+The build checks file presence and package integrity, but appearance in the WoW client still needs in-game confirmation. If artwork still appears doubled, send a screenshot and your character class, faction, specialization and Theme Mode.

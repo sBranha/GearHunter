@@ -28,7 +28,7 @@ def main(folder):
     cmd=shutil.which("magick") or shutil.which("convert")
     if not cmd: raise RuntimeError("ImageMagick is required")
     art=sorted((folder/"Art").rglob("*.tga"))
-    if len(art)!=157: raise RuntimeError("Original artwork must contain 157 TGA files")
+    if len(art)!=136: raise RuntimeError("Expected 136 active TGA images; the 21 retired character backgrounds must be absent")
     large=[p for p in art if p.stat().st_size>=1000000]
     before=after=0
     for i,p in enumerate(large,1):
@@ -42,7 +42,7 @@ def main(folder):
         for stem in stems: txt=txt.replace(stem+".tga",stem+".blp")
         if p.name=="Character.lua": txt=txt.replace('faction..".tga"','faction..".blp"')
         p.write_text(txt,encoding="utf-8")
-    if len(list((folder/"Art").rglob("*.tga")))+len(list((folder/"Art").rglob("*.blp")))!=157 or len(large)<100:
+    if len(list((folder/"Art").rglob("*.tga")))+len(list((folder/"Art").rglob("*.blp")))!=136 or len(large)<80:
         raise RuntimeError("Asset count mismatch")
     print("Complete: %d optimized BLP files, %d original small TGA files"%(len(large),len(art)-len(large)))
 if __name__=="__main__":

@@ -7,6 +7,12 @@ local COLORS={gold={1,0.82,0.34},blue={0.49,0.77,1},muted={0.73,0.83,0.94}}
 -- RELEASE NOTES MAINTENANCE: Every new release must have its own entry here,
 -- including what changed and instructions for using the newly added feature.
 GH.supportReleases={
+    {version="0.11.9", title="Clean HD character backgrounds", items={
+        "Removed 21 old low-resolution character-screen images from the addon package.",
+        "Removed Race theme mode; only the new high-resolution faction and specialization scenes are selected.",
+        "Old Race mode choices safely migrate to Auto for your alts; all other settings remain saved.",
+        "The Character model, class preview scenes, icons and ornate frame stay intact."},
+        how="Fully exit WoW, delete ONLY the previous _retail_/Interface/AddOns/GearHunter folder, then extract GearHunter v0.11.9 into _retail_/Interface/AddOns/. Keep your WTF folder. In Character > Theme Mode choose Auto, Class, Custom, or Off."},
     {version="0.11.8", title="Much smaller download, same Gear Hunter features", items={
         "Optimized 109 large class, faction and frame artwork textures using WoW-compatible BLP2 format.",
         "Reduced download size by roughly 79 percent without removing artwork, tools or features.",
@@ -14,7 +20,7 @@ GH.supportReleases={
         "All existing Gear Hunter functions and saved settings remain available."},
         how="Exit World of Warcraft fully. Delete only the old _retail_/Interface/AddOns/GearHunter folder so unused older images do not remain. Then extract the v0.11.8 ZIP into _retail_/Interface/AddOns/. Never delete the WTF folder; it holds your saved settings."},
 
-    {version="0.11.8", title="GearHunter.net Companion compatibility", items={
+    {version="0.11.7", title="GearHunter.net Companion compatibility", items={
         "Added optional GearHub companion load reporting and update notices through a separate helper addon.",
         "Gear Hunter works normally without Companion, registration, or website access.",
         "Added /ghwebsite to show the official download and support address."},
