@@ -1,6 +1,6 @@
 # GearHunter
 
-Official World of Warcraft addon. Current published version: **v0.11.7**.
+Official World of Warcraft addon. Current published version: **v0.11.8**.
 
 - Addon information and download counter: https://gearhunter.net/
 - Downloadable releases: https://github.com/sBranha/GearHunter/releases
@@ -22,3 +22,7 @@ No GitHub Desktop and no manual release asset upload are required. The website d
 **Important:** A version already published cannot be republished under the same tag by the workflow. Increase the TOC version for every new release. The source repository is not the public website: do not commit website administration code, SQLite data, passwords, setup keys, or credentials.
 
 The optional Windows Companion and in-game GearHubBridge supply update notifications and opt-in usage reporting. The addon itself works independently of them.
+
+## Size-optimized releases
+
+New releases use a build-time BLP2/DXT5 optimizer for large artwork. Small UI icons remain TGA, and original artwork remains in source. GitHub Actions validates the complete addon ZIP and generates its SHA-256 file before publishing. To avoid leaving unused legacy TGA artwork, exit WoW and remove the old `Interface/AddOns/GearHunter` folder before extracting the new release. Do not remove the WTF settings folder.

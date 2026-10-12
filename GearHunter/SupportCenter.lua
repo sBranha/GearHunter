@@ -7,7 +7,14 @@ local COLORS={gold={1,0.82,0.34},blue={0.49,0.77,1},muted={0.73,0.83,0.94}}
 -- RELEASE NOTES MAINTENANCE: Every new release must have its own entry here,
 -- including what changed and instructions for using the newly added feature.
 GH.supportReleases={
-    {version="0.11.7", title="GearHunter.net Companion compatibility", items={
+    {version="0.11.8", title="Much smaller download, same Gear Hunter features", items={
+        "Optimized 109 large class, faction and frame artwork textures using WoW-compatible BLP2 format.",
+        "Reduced download size by roughly 79 percent without removing artwork, tools or features.",
+        "Small interface icons stay in their original format to preserve sharpness.",
+        "All existing Gear Hunter functions and saved settings remain available."},
+        how="Exit World of Warcraft fully. Delete only the old _retail_/Interface/AddOns/GearHunter folder so unused older images do not remain. Then extract the v0.11.8 ZIP into _retail_/Interface/AddOns/. Never delete the WTF folder; it holds your saved settings."},
+
+    {version="0.11.8", title="GearHunter.net Companion compatibility", items={
         "Added optional GearHub companion load reporting and update notices through a separate helper addon.",
         "Gear Hunter works normally without Companion, registration, or website access.",
         "Added /ghwebsite to show the official download and support address."},
@@ -87,7 +94,7 @@ local BODY={
     HOME=table.concat({
         "WELCOME TO GEAR HUNTER SUPPORT", "", 
         "This help window stays separate from the main Gear Hunter screen. Choose any topic on the left to view instructions without losing your place.","",
-        "NEW IN THIS VERSION", "v0.11.7: optional website update notices through GearHub Companion. Existing addon features remain available without Companion.","",
+        "NEW IN THIS VERSION", "v0.11.8: a much smaller download using optimized Warcraft artwork. The addon tools are unchanged. Fully exit WoW, replace the GearHunter addon folder, then restart.","",
         "START HERE", "1. Click QUICK START for your first gear scan.","2. Click WHAT'S NEW to see exactly what was added and how to use it.",
         "3. Click FEATURE GUIDES for all of Gear Hunter's major tools.",
         "4. If an item or map source is missing, check TROUBLESHOOT.","",
