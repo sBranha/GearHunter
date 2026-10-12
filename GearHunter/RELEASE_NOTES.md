@@ -15,3 +15,5 @@
 5. Keep your `WTF` folder: it stores saved addon settings and should not be deleted.
 
 The optional Windows GearHub Companion remains optional. If you encounter a missing background or frame artwork, please report your character class/specialization, faction, and a screenshot through gearhunter.net.
+
+Build note: this release uses forced RGBA input to ensure consistent DXT5 artwork encoding on Linux GitHub runners.
