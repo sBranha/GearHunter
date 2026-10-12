@@ -1,0 +1,29 @@
+## Interface: 120100
+## Title: |cffc7e99dGear Hunter v0.11.7|r
+## Notes: Support Center with release notes, usage guides and bug-report diagnostics. Farm Session Tracker, saved dungeon, raid and boss Favorites, Collection Dashboard, Gear Upgrade Planner, Boss Loot Hunter, Gear Search, Transmog Hunter, Hunt List, Farm Route, Smart Picks, Weekly Farm, Alt Tracker, upgrades, 3D character and verified map sources.
+## Author: Gear Hunter Project
+## Version: 0.11.7
+## SavedVariables: GearHunterDB
+## IconTexture: Interface\AddOns\GearHunter\Art\UIIcons\map.tga
+## AddonCompartmentFunc: GearHunter_OnAddonCompartmentClick
+Core.lua
+Journal.lua
+GearSearch.lua
+BossLoot.lua
+Transmog.lua
+Checklist.lua
+FarmRoute.lua
+SmartPicks.lua
+UpgradePlanner.lua
+WeeklyFarm.lua
+AltTracker.lua
+CollectionDashboard.lua
+FarmSession.lua
+SourceCapture.lua
+Navigation.lua
+SourcePin.xml
+SupportCenter.lua
+UI.lua
+Character.lua
+
+HubIntegration.lua
