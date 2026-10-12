@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'GearHunter/**'
+      - '.github/workflows/publish-gear-hunter.yml'
   workflow_dispatch:
 
 permissions:
@@ -30,10 +31,12 @@ jobs:
           version="$(sed -nE 's/^## Version:[[:space:]]*([^[:space:]]+).*/\1/p' "$toc" | head -1 | tr -d '\r')"
           [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Invalid ## Version in $toc"; exit 1; }
           count="$(find "$addon" -type f | wc -l)"
-          if [ "$count" -lt 150 ]; then
-            echo "Refusing release: only $count files in $addon (require 150 or more). Upload the complete addon source first."
+          if [ "$count" -lt 186 ]; then
+            echo "Refusing release: only $count files in $addon (require 186 or more). Upload the complete addon source first."
             exit 1
           fi
+          tga_count="$(find "$addon/Art" -type f -name '*.tga' | wc -l)"
+          [ "$tga_count" -eq 157 ] || { echo "Artwork incomplete: expected 157 TGA files; found $tga_count"; exit 1; }
           while IFS= read -r file; do
             file="${file%$'\r'}"
             case "$file" in
