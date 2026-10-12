@@ -1,0 +1,8 @@
+GEAR HUNTER v0.11.2 - UPGRADE PLANNER
+
+Open /gh plan or MY GEAR -> OPEN GEAR UPGRADE PLANNER.
+Select any worn piece, compare its live rank and cap, and flag it as a priority.
+At a Blizzard item upgrade NPC, select that same item and press REFRESH COSTS.
+Only the costs actually returned by the game will be shown.
+No guessed currency prices, automatic upgrades, or automatic spending.
+The selected item cost preview is session-only; saved priorities are per character.

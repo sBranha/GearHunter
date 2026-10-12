@@ -1,0 +1,18 @@
+Gear Hunter v0.10.8 - Weekly Farm Tracker
+
+Type /gh weekly (or /gh lockouts), or open HUNT LIST > WEEKLY LOCKOUTS.
+
+REFRESH LOCKOUTS asks Blizzard for live saved-instance data and updates the screen when the server replies.
+The list shows active saved raids, dungeons, and world bosses for your CURRENT character.
+Select one to inspect boss defeats and the exact reset countdown supplied by WoW.
+
+Unfinished HUNT LIST items are shown in a saved instance when a verified gear source matches the
+instance NAME and DIFFICULTY from Blizzard's saved-instance records. The boss name must match exactly
+(normalized for punctuation/case) to show a defeated or not-defeated status.
+
+No saved lockout entry does NOT mean you are eligible for loot. Other difficulties and reset rules
+(daily/weekly, Mythic+, world bosses) differ, and the addon never marks unsaved sources as ready.
+Only confirmed existing Gear Hunter source records enable map/guide buttons.
+
+The addon does not track runs or loot drops automatically beyond what Blizzard's saved-instance
+and encounter APIs actually provide. No web connection or external service is required.

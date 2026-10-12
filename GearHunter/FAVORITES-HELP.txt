@@ -1,0 +1,14 @@
+GEAR HUNTER - SAVED FAVORITES (v0.11.4)
+
+Open the addon and select GEAR SEARCH -> BOSS LOOT, or type /gh bosses.
+1. Select a dungeon or raid and click SAVE INSTANCE to remember it.
+2. Select a boss and click SAVE BOSS to remember only that boss.
+3. Click FAVORITES to view saved destinations; click SHOW ALL to return to the full Adventure Guide catalog.
+4. Click the same SAVE/REMOVE button again to unstar an entry.
+5. Or type /gh favorites (aliases: /gh favs, /gh bookmarks) to open Favorites immediately.
+
+Saved favorites are account-wide and persist between logins via GearHunterDB in your normal WoW WTF SavedVariables folder.
+
+A boss favorite is keyed by the Adventure Guide's instanceID + encounterID, not boss name. No locations or loot are fabricated. If equipment information is missing, click INDEX ADVENTURE GUIDE to discover verified sources. Opening map options still requires real location data from WoW.
+
+Installation: Close WoW, extract over the existing GearHunter addon folder, replace files, and keep your WTF folder untouched.

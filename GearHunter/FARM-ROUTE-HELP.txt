@@ -1,0 +1,13 @@
+GEAR HUNTER v0.10.6 - FARM ROUTE
+
+OPEN: HUNT LIST > PLAN FARM ROUTE or /gh route
+
+1. Add gear targets in HUNT LIST and leave the targets unfinished.
+2. Index the Blizzard Adventure Guide in GEAR SEARCH to identify possible dungeon/raid sources.
+3. PLAN FARM ROUTE groups your unfinished targets by exact Adventure Guide instance ID.
+4. Observed merchant locations are also included, labeled LAST SEEN VENDOR (not verified).
+5. Select a stop; select an item to inspect the boss. Use SHOW ENTRANCE / SHOW BOSS / OPEN GUIDE.
+6. MOVE UP / MOVE DOWN changes the order of destination stops. NEXT STOP advances through the list.
+7. RETURN TO HUNT LIST to check items off; completed items leave the route automatically.
+
+IMPORTANT: The route is manually ordered and does not provide travel times or automatic directions. Missing item sources are listed as NEED SOURCES. When Blizzard has no reliable entrance/boss coordinates, the addon does not invent a map pin.

@@ -1,0 +1,14 @@
+Gear Hunter v0.10.4 - TRANSMOG HUNTER
+
+Type /gh mog or select TRANSMOG in the top tabs.
+Choose a category with the left/right arrows, or press ALL CATEGORIES to start a full Blizzard collection scan.
+Use filters MISSING, COLLECTED, ALL, or TRACKED.
+Search within your selected category by name, item ID, or visual/appearance ID.
+TRACK APPEARANCE saves the visual ID (not a specific item link).
+SHOW ENTRANCE and SHOW BOSS only activate for known sources already indexed by Gear Hunter.
+FIND ITEM IN GEAR SEARCH jumps to the existing in-game item search.
+
+Notes: This uses WoW's own Transmog Collection, not a live Wowhead search.
+Blizzard API category lists depend on class eligibility and known appearances.
+The item that grants an appearance may not be the same as its appearance ID.
+Neither a collection status nor an item icon proves the location of an item; only recorded sources are shown.

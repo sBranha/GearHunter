@@ -1,0 +1,3 @@
+Gear Search v0.10.1: open /gh search. Type name, item ID, or item link. The addon searches equipment you have seen and Blizzard Encounter Journal loot that you have indexed. Click INDEX ALL DUNGEONS / RAIDS for broad, optional loot indexing. Verified sources can be opened via Adventure Guide or world map. No live Wowhead network access exists inside a WoW addon. Wowhead URL is provided for manual copy into a browser.
+
+0.10.2 Navigation: SHOW ENTRANCE matches journal instance entrance; SHOW BOSS matches the specific encounter and opens its instance floor; OPEN GUIDE shows journal. When Blizzard provides no map coordinates, no guessed pin is placed.

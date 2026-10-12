@@ -1,0 +1,10 @@
+Gear Hunter v0.11.5 - Farm Session Tracker
+
+Open Boss Loot Hunter -> Farm Session Tracker or type /gh session.
+Start Session to record successful ENCOUNTER_END boss events and loot appearing in your own chat.
+Finish Session when you are done. Sessions are preserved per character (up to 30 sessions and 300 events per session) in the GearHunterDB saved variables.
+The log does NOT infer which boss dropped a looted item; it only records boss defeats and player loot messages separately.
+Farm tracking is off until you explicitly start it. Logouts / UI reloads finish the active session.
+Loot detection uses localized Blizzard self-loot chat templates; some loot messages may not be represented.
+
+Open /gh session | /gh farmstart | /gh farmstop.
