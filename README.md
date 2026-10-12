@@ -1,16 +1,24 @@
-# Gear Hunter
+# GearHunter
 
-Official World of Warcraft addon **Gear Hunter** (current prepared build: **v0.11.7**).
+Official World of Warcraft addon. Current published version: **v0.11.7**.
 
-**Official website:** https://gearhunter.net/addon.php?slug=gear-hunter  
-**Downloads and update information:** https://gearhunter.net/
+- Addon information and download counter: https://gearhunter.net/
+- Downloadable releases: https://github.com/sBranha/GearHunter/releases
+- Source files: `GearHunter/`
+- Published ZIP: `GearHunter-vX.Y.Z.zip`
 
-Gear Hunter is a standalone addon. The optional GearHub Windows Companion and GearHubBridge helper provide update notices and voluntary installation statistics, but the addon works without them.
+## Automated publishing
 
-## Development and releases
+This repository is wired for automated GitHub Releases using **GitHub Actions**, following the project's David-style distribution process.
 
-The `GearHunter/` directory contains the complete in-game addon with its original artwork and textures. Package that folder as `GearHunter-v<version>.zip` when publishing a release. Do not publish private server keys, SQLite databases, or any website admin files in this repository.
+When a complete new addon build is committed to `GearHunter/` with an increased `## Version:` in `GearHunter.toc`, the publish workflow:
+1. Validates the addon directory and TOC version.
+2. Builds an installable ZIP containing the correct addon folder.
+3. Generates a SHA-256 checksum.
+4. Publishes the release as `vX.Y.Z` on GitHub.
 
-Release updates and downloads should be managed from the gearhunter.net admin panel once the site's GitHub integration is configured. Players should use gearhunter.net for downloads.
+No GitHub Desktop and no manual release asset upload are required. The website detects published GitHub releases, records website download clicks in SQLite, and redirects the user to the GitHub-hosted ZIP. GitHub's own asset download counters are reported separately.
 
-**Status:** Repository initialized. Complete addon files still need to be uploaded.
+**Important:** A version already published cannot be republished under the same tag by the workflow. Increase the TOC version for every new release. The source repository is not the public website: do not commit website administration code, SQLite data, passwords, setup keys, or credentials.
+
+The optional Windows Companion and in-game GearHubBridge supply update notifications and opt-in usage reporting. The addon itself works independently of them.
