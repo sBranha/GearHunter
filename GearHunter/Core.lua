@@ -1,7 +1,7 @@
 -- Gear Hunter 0.3.1 - Retail (Midnight). No third-party dependencies.
 local addonName, GH = ...
 _G.GearHunter = GH
-GH.version = "0.11.9"
+GH.version = "0.11.10"
 GH.items = {}
 GH.equipped = {}
 GH.slotDefs = {

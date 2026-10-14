@@ -1,18 +1,18 @@
-## Gear Hunter v0.11.9 — Clean HD Character Backgrounds
+## Gear Hunter v0.11.10 — Website Support + WoW Retail 12.1.5
 
-This update retires the first-generation character-screen artwork.
+- Updated the addon interface header to **120105** for WoW Retail 12.1.5.
+- Added a **WEBSITE & SUPPORT** page to the existing in-game **?** Support Center, with a selectable link to GearHunter.net.
+- Updated **/ghwebsite** and optional Companion version reporting.
+- Kept the core gear features, artwork and character settings intact.
+- Support Center What's New includes instructions for the new page; no donation solicitation appears in-game.
 
-- Removed 21 obsolete TGA backgrounds and eliminated the Race background mode that could still select them.
-- All characters with the retired Race preference automatically switch to Auto. Other preferences and saved gear remain unchanged.
-- When no valid scene is selected, the previous texture is cleared so it cannot linger.
-- Kept 80 high-resolution Alliance/Horde specialization scenes and all existing class previews, icons and Midnight frames.
-- Kept compact BLP2 artwork compression for a smaller ZIP.
+### Install
+1. Exit WoW.
+2. Remove only the old `_retail_/Interface/AddOns/GearHunter` addon folder so retired artwork doesn't linger. **Do not delete `WTF`**.
+3. Extract the new ZIP so the folder is `_retail_/Interface/AddOns/GearHunter/`.
+4. Restart WoW; type `/gh` and click the **?** button, then **WEBSITE & SUPPORT**.
 
-### Installation (important)
-1. Exit World of Warcraft completely.
-2. Delete **only** the old `_retail_/Interface/AddOns/GearHunter` folder before installing. Otherwise the older image files may remain.
-3. Extract the new `GearHunter-v0.11.9.zip` into `_retail_/Interface/AddOns/`.
-4. Restart WoW and open `/gh`, then Character. Change Theme Mode between Auto, Class, Custom or Off.
-5. Do **not** delete the `WTF` folder; it contains your saved character settings.
+**Compatibility note:** The 120105 header removes the out-of-date indicator for this game interface. Runtime behavior still needs testing in the patched WoW client.
 
-The build checks file presence and package integrity, but appearance in the WoW client still needs in-game confirmation. If artwork still appears doubled, send a screenshot and your character class, faction, specialization and Theme Mode.
+### Previous release — v0.11.9
+Retired obsolete low-resolution race backgrounds, kept optimized high-resolution faction/class scenes, and migrated saved Race theme preferences to Auto.
