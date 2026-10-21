@@ -1,0 +1,31 @@
+MapHub v0.7.1 bundled Wetlands rare coordinate records:
+Source: AllTheThings, https://github.com/ATTWoWAddon/AllTheThings
+Source path: .contrib/.db/standard/02 - Outdoor Zones/02 Eastern Kingdoms/Wetlands.lua
+Copyright (c) 2026 AllTheThings WoW Addon
+
+MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+Additional adapted rare coordinates (105 zone datasets):
+AllTheThings, https://github.com/ATTWoWAddon/AllTheThings
+Copyright (c) 2026 AllTheThings WoW Addon, licensed MIT.
+Full MIT license reproduced above. Source files: .contrib/.db/standard/02 - Outdoor Zones / 01 Kalimdor, 02 Eastern Kingdoms, 03 Outland, 04 Northrend, 06 Pandaria, 07 Draenor, 10 Kul Tiras, 11 Zandalar, 12 Nazjatar, 14 Dragon Isles, 15 Khaz Algar, 16 Quel'Thalas.
+Excluded phase-specific classic season data when identified. Modern phase compatibility remains unverified for some spawns.

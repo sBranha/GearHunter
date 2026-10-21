@@ -1,0 +1,47 @@
+## Interface: 120100, 120105
+## Title: |cffd6bb78Gear Hunter Navigator|r |cffaaaaaa(0.4.7)|r
+## Notes: One addon: original Gear Hunter UI inside Navigator; plus mounts, upgrade discovery, and rare/treasure maps.
+## Author: Gear Hunter Project
+## Version: 0.4.7
+## SavedVariables: GearHunterNavigatorDB
+## IconTexture: Interface\AddOns\GearHunterNavigator\Art\UIIcons\map.tga
+Core.lua
+Data/CuratedLocations.lua
+Data/ExpandedLocations.lua
+Data/WorldwideRares.lua
+Guides.lua
+LevelingGuide.lua
+MountSources.lua
+ExtraMountGuides.lua
+Intelligence.lua
+DiscoveryIcons.lua
+Discoveries.lua
+AdventurePlanner.lua
+GearLevels.lua
+Gear.lua
+SourceCatalog.lua
+JournalLoot.lua
+Engines/GearHunter/Core.lua
+Engines/GearHunter/Journal.lua
+Engines/GearHunter/GearSearch.lua
+Engines/GearHunter/BossLoot.lua
+Engines/GearHunter/Transmog.lua
+Engines/GearHunter/Checklist.lua
+Engines/GearHunter/FarmRoute.lua
+Engines/GearHunter/SmartPicks.lua
+Engines/GearHunter/UpgradePlanner.lua
+Engines/GearHunter/WeeklyFarm.lua
+Engines/GearHunter/AltTracker.lua
+Engines/GearHunter/CollectionDashboard.lua
+Engines/GearHunter/FarmSession.lua
+Engines/GearHunter/SourceCapture.lua
+Engines/GearHunter/Navigation.lua
+Engines/GearHunter/SourcePin.xml
+OriginalGearHunterCharacter.lua
+OriginalGearHunterSupport.lua
+OriginalGearHunterUI.lua
+GearEngineBridge.lua
+MapDiscoveryPins.lua
+MapDiscoveryPins.xml
+ProgressPages.lua
+UI.lua

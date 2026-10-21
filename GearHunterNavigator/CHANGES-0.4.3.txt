@@ -1,0 +1,14 @@
+Gear Hunter Navigator 0.4.3 — Level-aware upgrade filtering
+
+- Required CHARACTER level must be <= current player level +5 by default.
+- Optional +10 range using RANGE buttons in Navigator Gear and Gear Hunter.
+- One shared per-account setting for both interfaces.
+- Original Gear Hunter Gear Search and Boss Loot now use the same cutoff,
+  including previously indexed items; pending item metadata stays hidden.
+- Normal upgrade finder, observed vendors/crafting/quests, and journal source
+  scans follow the shared cutoff. +1 item-level gains still qualify.
+- Range changes invalidate old scan selections so results cannot leak.
+- No changes to character artwork, mount guides, or approved map icons.
+
+Test example: Level 4 -> required levels 0–9 (+5) or 0–14 (+10).
+The item level (iLvl) is separate from required character level.

@@ -1,0 +1,67 @@
+Gear Hunter Navigator v0.3.6 map records from our existing MapHub v0.8.0.
+
+MapHub 0.6.0 data sources and limitations (2026-10-14)
+
+1. Earlier MapHubMapRecords including Eversong, Elwynn Forest and Midnight Sunwell markers are retained.
+2. Burning Steppes rare creature names and approximate or documented locations researched from Warcraft Wiki (warcraft.wiki.gg); Gruklash also has a reported Wowhead sighting. Approximate markers are identified in each pin tooltip. Locations may differ by version or phase.
+3. Selected Legion coordinates, NPC IDs and quest-completion IDs adapted from HandyNotes: Legion Treasures, by Kemayo, under its MIT license: https://github.com/kemayo/wow-handynotes-legiontreasures
+4. Selected Shadowlands coordinates, NPC IDs and quest-completion IDs adapted from HandyNotes: Shadowlands Treasures, by Kemayo, under its MIT license: https://github.com/kemayo/wow-handynotes-shadowlandstreasures
+
+THE MIT LICENSE
+Copyright (c) the respective HandyNotes authors and contributors.
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+Scope: This is an expanded *partial* discovery database. In-game discovery of unspawned, hidden, phased entities is not possible when Blizzard does not expose their positions. No WoW Retail in-client test has been performed. Some older data has no verified exact location or readable NPC name; they are labelled as approximate or as NPC ID rather than invented names. MapHub does not incorporate any all-rights-reserved addon source code or package another addon.
+
+
+MapHub v0.7.1 bundled Wetlands rare coordinate records:
+Source: AllTheThings, https://github.com/ATTWoWAddon/AllTheThings
+Source path: .contrib/.db/standard/02 - Outdoor Zones/02 Eastern Kingdoms/Wetlands.lua
+Copyright (c) 2026 AllTheThings WoW Addon
+
+MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+Additional adapted rare coordinates (105 zone datasets):
+AllTheThings, https://github.com/ATTWoWAddon/AllTheThings
+Copyright (c) 2026 AllTheThings WoW Addon, licensed MIT.
+Full MIT license reproduced above. Source files: .contrib/.db/standard/02 - Outdoor Zones / 01 Kalimdor, 02 Eastern Kingdoms, 03 Outland, 04 Northrend, 06 Pandaria, 07 Draenor, 10 Kul Tiras, 11 Zandalar, 12 Nazjatar, 14 Dragon Isles, 15 Khaz Algar, 16 Quel'Thalas.
+Excluded phase-specific classic season data when identified. Modern phase compatibility remains unverified for some spawns.
+
+
+MAPHUB 0.8.0 - WORLD RARE DATABASE REPORT
+
+Bundle: 1702 named rare entries across 105 zone datasets, 3280 spawn positions.
+Additional bundled records from earlier MapHub ExpandedMapData.lua: Legion and Shadowlands rares/treasures.
+These figures count mapped spawn positions, not all unique NPCs in World of Warcraft.
+This DOES NOT guarantee every rare, every phase, every expansion or every zone has been cataloged.
+No map images or extra updates needed: WoW renders its own map and MapHub overlays data.
+All locations load immediately when their map is selected; a live rare need not be visible or active.
+There are no CMD/PS1/PowerShell files in this addon ZIP.
+
+What's new: 105 bundled old-world/new-expansion zone datasets, compact label deduplication for multiple spawn points, red rare skulls retained, new /mhworld diagnostics.
+
+Data source: MIT-licensed AllTheThings project (specific outdoor-zone Rares.lua coordinates).
+Some locations are historic, phased, or subject to patch changes.
+Do not mistake a documented possible spawn point for an enemy that is currently spawned.
+Real in-client testing and full-world audit remain pending.

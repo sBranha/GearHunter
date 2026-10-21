@@ -1,0 +1,31 @@
+v0.4.1 APPROVED ICON TEST PLAN
+- In /ghnav > Map, check that the internal map preview uses real skull/chest/eye etc icons rather than color dots.
+- Check all eight icons render in the preview legend and match the supplied October 20 screenshot.
+- Check the world map Navigator Icons menu has the same eight images, each toggles its corresponding markers.
+- Check filters persist after /reload; known locations in Elwynn, Wetlands, Midnight Eversong are still visible.
+- Check icon click selects a location; known waypoint behavior and hide-visited behavior are unchanged.
+- Categories with no bundled records (such as flight paths in some zones) show zero pins rather than fabricated points.
+- Check Gear Hunter character screen, mounts and gear upgrades behave the same as v0.4.0.
+- Lua syntax and archive validations are automated; actual game-client rendering cannot be tested here.
+
+v0.4.0: Original Gear Hunter visual layer restored from original author-owned GearHunter-v0.11.7, within the Navigator addon. No competitor code copied. Test original UI, gear tabs, character scene, Map and Mount pages in actual WoW.
+
+v0.3.6 TEST PLAN
+- Enter Elwynn Forest; Map tab should show bundled rares; select one and set a waypoint.
+- In Wetlands verify rares; in Midnight Eversong verify treasures/secrets.
+- Travel between zones; the Map tab should refresh to the new zone automatically.
+- Select and mark a location VISITED, turn HIDE VISITED on/off, and reload UI to verify it persists.
+- Try filters and search; inspect sources in hover tooltips.
+- Dashboard should offer gear, mount goal and nearby known discovery when available.
+- Intelligence priority Rares should recommend a known discovery for your current zone.
+- Mount journal search should still work; check Ashes of Al’ar and Midnight are different guides.
+- Character view, size buttons, footing, rotation and gear scanner must be checked in-game.
+- No external HTTP calls. World data is bundled and partial, not a live-spawn finder.
+
+DATA ORIGINS
+- Blizzard C_Map, C_MountJournal, Encounter Journal and item APIs (game only).
+- Existing MapHub v0.8.0 source records from this project's Library archive; licenses and sources in Data/DATA-LICENSES.txt.
+- GearMatic and Pawn researched as architectural references only. No code or proprietary source tables from either are included.
+
+0.3.7: Minimum character level is GetItemInfo/C_Item.GetItemInfo's FIFTH return value (itemMinLevel); GetItemInfoInstant does not provide required character level. Uses GetMaxLevelForPlayerExpansion/GetMaxPlayerLevel for cap when available. "Uncached" means unknown, NOT an eligible +0 requirement.
+Game API references: https://warcraft.wiki.gg/wiki/API_C_Item.GetItemInfo ; https://warcraft.wiki.gg/wiki/API_GetMaxLevelForPlayerExpansion ; https://warcraft.wiki.gg/wiki/API_GetMaxPlayerLevel

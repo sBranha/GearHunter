@@ -1,0 +1,6 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+  <Frame name="GHNDiscoveryPinTemplate" mixin="GHNDiscoveryPinMixin" inherits="MapCanvasPinTemplate" virtual="true" enableMouse="true">
+    <Size x="22" y="22"/>
+    <Layers><Layer level="ARTWORK"><Texture parentKey="Icon" setAllPoints="true"/></Layer></Layers>
+  </Frame>
+</Ui>

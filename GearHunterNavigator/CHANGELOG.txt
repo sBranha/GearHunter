@@ -1,0 +1,58 @@
+Gear Hunter Navigator v0.4.7 — COLLECTIONS AND WEBSITE RELEASE
+- One installable addon: GearHunterNavigator. The old separate GearHunter and MapHub addon folders are not needed.
+- Collections: mounts/toys totals appear on their own line; search and paging, no overlapping last row.
+- Quests: active quest objectives and quest-specific help, not mount-guide shortcuts.
+- Reputation: faction standings and available Renown information from the game.
+- Gear Hunter: original ornate Midnight interface, character view, upgrades and loot-hunting panels.
+- Upgrades: +5 required-level window by default, optional +10; item-tooltip validation and +1 item-level upgrades.
+- Mounts: searchable mount journal, collected filters and source-based acquisition guidance.
+- Rares & Treasures: bundled known locations with eight category icons in Navigator and the WoW map.
+- Leveling: class-aware guidance and available quest information; not a fully optimized quest route.
+- This release standardizes the public version number and release documentation.
+HOW TO USE: Install only GearHunterNavigator into _retail_/Interface/AddOns/. Type /ghnav.
+Select Gear Hunter for gear-finding tools, Map for rare/treasure icons, and Collections for mounts/toys.
+KNOWN LIMITATIONS: Rare pins are known locations, not live spawns. Not all quest/gear/mount sources have detailed data.
+Real in-game verification is required; offline code tests alone do not guarantee compatibility with every character.
+
+Gear Hunter Navigator v0.4.6 — ORIGINAL MIDNIGHT FRAME ACROSS NAVIGATOR
+- The full Navigator window uses the EXACT ReferenceOrnateBorder.tga and
+  ReferenceBlueGlow.tga textures from the original Gear Hunter art folder.
+- Border and glow are decorative, cannot intercept clicks, and resize with
+  Navigator on different screen resolutions. The original Gear Hunter view
+  remains above Navigator's border when selected, with its own frame intact.
+- Top header repositioned slightly below the ornate edge; all functional
+  navigation/content panels retain their locations and sizing.
+- Includes v0.4.5: live Quests, Reputation, and Collections pages instead of
+  placeholder pages and the incorrect "Open Mount Guides" shortcut.
+- Keeps 0.4.4's gear eligibility checks and 0.4.1's 8 approved map icons.
+- Live in-game visual review is still required to validate the final alignment.
+
+Gear Hunter Navigator v0.4.1 — APPROVED RARES & TREASURES IN-GAME ICONS
+- Extracted all eight approved icon sprites directly from the user's 2026-10-20 uploaded screenshot.
+- Installed 64x64 transparency-enabled TGA textures at Art/DiscoveryIcons/.
+- The Navigator Map tab now renders these actual icons in the map preview, discovery rows,
+  category controls, and an eight-category clickable legend beside the map.
+- The Blizzard World Map pins now use the same sprites; click Navigator Icons on the
+  World Map to show or hide each category (settings persist between sessions).
+- Categories: Rares, Treasures, Elite Rares, World Bosses, Secrets, Quests,
+  Vendors, Flight Paths. Markers only appear when the bundled database actually
+  contains a location of the corresponding category; no fabricated spawn data.
+- Map pins continue to represent known possible positions, not live enemy spawns.
+- Retains the full original Gear Hunter UI, mounts, and five-level gear filtering.
+- Does not require Blizzard servers to edit or package.
+
+v0.4.0: Restored original Gear Hunter 1600x900 UI in Navigator. Original Midnight border, model/slots, tabs, panels, showcase, and support center loaded inside one addon. MapHub discoveries remain integrated in the Map page. Single addon and minimap entry.
+
+Gear Hunter Navigator 0.3.9 — UNIFIED ONE-ADDON BUILD
+====================================================
+- ONE addon folder and one TOC; no separate GearHunter or MapHub addons required.
+- Original Gear Hunter logic and 11 full working tool panels run INSIDE the Navigator Gear Hunter page.
+- Original character model, podium, mounts, native Gear page and fullscreen UI preserved.
+- Original MapHub-derived curated and worldwide locations remain inside Navigator.
+- Navigator world-map data provider renders rare and treasure pins on Blizzard map.
+- Native map filters and right-click visited marking; saved only in GearHunterNavigatorDB.
+- Existing within-five-level requirement rule preserved for original Gear Hunter scanning.
+- Source catalogs and observed quest/vendor/crafting item discovery retained.
+- One SavedVariables file: GearHunterNavigatorDB (Gear Hunter engine under .gearHunter).
+LIMITS: World rarity data are known locations, not live spawns. Source discovery is
+not a complete offline catalog. Visual/live WoW runtime testing remains necessary.

@@ -1,0 +1,8 @@
+v0.4.6 — Matching original Gear Hunter Midnight frame across ALL Navigator pages
+The border reuses the exact original Gear Hunter graphics already bundled in the addon:
+- Art/OriginalGearHunter/Frames/ReferenceOrnateBorder.tga
+- Art/OriginalGearHunter/Frames/ReferenceBlueGlow.tga
+No rendered screenshots or new replacement frame files used.
+Navigator remains a single addon and one full-screen UI; border art is click-through,
+animated glow runs lightly, and the complete gear hunter page keeps its original frame.
+Includes quest, reputation, collections repairs introduced in v0.4.5.

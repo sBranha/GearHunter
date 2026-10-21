@@ -1,0 +1,10 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Frame name="GearHunterSourceMapPinTemplate" inherits="MapCanvasPinTemplate" mixin="GearHunterSourceMapPinMixin" virtual="true">
+        <Size x="30" y="30" />
+        <Layers>
+            <Layer level="ARTWORK">
+                <Texture parentKey="Texture" file="Interface\AddOns\GearHunterNavigator\Art\UIIcons\map.tga" setAllPoints="true" />
+            </Layer>
+        </Layers>
+    </Frame>
+</Ui>
