@@ -1,33 +1,28 @@
-# GearHunter
+# Gear Hunter Navigator
 
-Official World of Warcraft addon. Current published version: **v0.11.10**.
+**Current public addon: Gear Hunter Navigator v0.4.7**, a single World of Warcraft Retail addon combining the original Gear Hunter equipment tools, known MapHub discoveries, and Navigator’s guides.
 
-- Addon information and download counter: https://gearhunter.net/
-- Downloadable releases: https://github.com/sBranha/GearHunter/releases
-- Source files: `GearHunter/`
-- Published ZIP: `GearHunter-vX.Y.Z.zip`
+**[Download Gear Hunter Navigator v0.4.7](https://github.com/sBranha/GearHunter/releases/download/navigator-v0.4.7/GearHunterNavigator-v0.4.7.zip)** · [Release notes](https://github.com/sBranha/GearHunter/releases/tag/navigator-v0.4.7) · [Official website](https://gearhunter.net/)
 
-## Automated publishing
+## Included features
 
-This repository is wired for automated GitHub Releases using **GitHub Actions**, following the project's David-style distribution process.
+- Original Gear Hunter interface and art, equipped gear, dungeon/raid loot, and upgrade planning.
+- Level-aware upgrade results, showing +1 item-level improvements, with a default +5 and optional +10 required-level window.
+- Class-aware leveling help, quest objectives, reputation and Renown where exposed by WoW.
+- Searchable Mount Journal, mount guides, collected mounts and toys.
+- Known rare, treasure, world boss, secret, vendor and flight-path locations with custom map icons. Pins do not guarantee live spawns.
+- Adventure Planner, Support Center, and ornate Midnight-style character interface.
 
-When a complete new addon build is committed to `GearHunter/` with an increased `## Version:` in `GearHunter.toc`, the publish workflow:
-1. Validates the addon directory and TOC version.
-2. Builds an installable ZIP containing the correct addon folder.
-3. Generates a SHA-256 checksum.
-4. Publishes the release as `vX.Y.Z` on GitHub.
+**Install:** Exit WoW. Remove old `GearHunter` and `MapHub` addon directories and replace your previous `GearHunterNavigator` folder with the `GearHunterNavigator` directory from the ZIP under `World of Warcraft/_retail_/Interface/AddOns/`. Keep your `WTF` folder. Open in-game with `/ghnav`. No separate addons are required.
 
-No GitHub Desktop and no manual release asset upload are required. The website detects published GitHub releases, records website download clicks in SQLite, and redirects the user to the GitHub-hosted ZIP. GitHub's own asset download counters are reported separately.
+## Publishing and source
 
-**Important:** A version already published cannot be republished under the same tag by the workflow. Increase the TOC version for every new release. The source repository is not the public website: do not commit website administration code, SQLite data, passwords, setup keys, or credentials.
+This repository contains `GearHunterNavigator/` and an automated `publish-navigator.yml` GitHub Actions workflow. Releases use the tag scheme `navigator-vX.Y.Z`, include the complete one-folder ZIP, and generate a SHA-256 checksum. The release build reuses the Gear Hunter artwork already in this repository's history and generates optimized WoW BLP textures. The successful v0.4.7 release was built by [GitHub Actions](https://github.com/sBranha/GearHunter/actions).
 
-The optional Windows Companion and in-game GearHubBridge supply update notifications and opt-in usage reporting. The addon itself works independently of them.
+**Website update package:** [GearHunter.net v2.0.38 unified Navigator updater ZIP](https://github.com/sBranha/GearHunter/raw/refs/heads/main/website-updates/GearHunter-Website-UPDATE-v2.0.38-UNIFIED-NAVIGATOR.zip). It is for the GearHunter.net admin Website Updater and is separate from the WoW addon ZIP. The site update must be installed on DreamHost before its public pages change.
 
-## Size-optimized releases
+## Archived standalone addons
 
-New releases use a build-time BLP2/DXT5 optimizer for large artwork. As of v0.11.10, all 21 obsolete first-generation character backgrounds are excluded. Small UI icons remain TGA, and original artwork remains in source. GitHub Actions validates the complete addon ZIP and generates its SHA-256 file before publishing. To avoid leaving unused legacy TGA artwork, exit WoW and remove the old `Interface/AddOns/GearHunter` folder before extracting the new release. Do not remove the WTF settings folder.
+The earlier [Gear Hunter standalone releases](https://github.com/sBranha/GearHunter/releases) remain here, and [MapHub standalone releases](https://github.com/sBranha/MapHub/releases) remain in their original repository for historical reference. They are no longer the recommended current installation.
 
-
-### WoW Retail 12.1.5
-
-The addon declares interface **120105** and includes **WEBSITE & SUPPORT** in its in-game Support Center. For future patches, bump the TOC version and interface together; the publish workflow releases the complete ZIP on main-branch changes.
+Gear Hunter Navigator is free. No CurseForge dependency or in-game donation solicitation.
