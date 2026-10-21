@@ -1,0 +1,90 @@
+name: Publish Gear Hunter Navigator
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'GearHunterNavigator/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+concurrency:
+  group: release-gear-hunter-navigator
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Gear Hunter repository
+        uses: actions/checkout@v4
+      - name: Validate unified Navigator source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f GearHunterNavigator/GearHunterNavigator.toc
+          version="$(sed -nE 's/^## Version:[[:space:]]*([^[:space:]]+).*/\1/p' GearHunterNavigator/GearHunterNavigator.toc | head -1 | tr -d '\r')"
+          [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Invalid version: $version"; exit 1; }
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+          echo "TAG=navigator-v$version" >> "$GITHUB_ENV"
+          test "$(find GearHunterNavigator -type f \( -name '*.lua' -o -name '*.xml' \) | wc -l)" -ge 30
+          test "$(find GearHunterNavigator/Art/DiscoveryIcons -name '*.tga' | wc -l)" -eq 8
+          test "$(find GearHunterNavigator/Art/OriginalGearHunter -maxdepth 1 -name '*.tga' | wc -l)" -ge 21
+          while IFS= read -r file; do
+            file="$(printf '%s' "$file" | tr -d '\r')"
+            case "$file" in
+              *.lua|*.xml) test -f "GearHunterNavigator/$file" || { echo "Missing TOC file: $file"; exit 1; } ;;
+            esac
+          done < GearHunterNavigator/GearHunterNavigator.toc
+      - name: Install BLP image conversion tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -qq -y imagemagick
+      - name: Build complete single-addon package with existing Gear Hunter art
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/build"
+          cp -a GearHunterNavigator "$RUNNER_TEMP/build/GearHunterNavigator"
+          mkdir -p "$RUNNER_TEMP/build/GearHunterNavigator/Art/Scenes" "$RUNNER_TEMP/build/GearHunterNavigator/Art/Frames"
+          cp -a GearHunter/Art/Scenes/. "$RUNNER_TEMP/build/GearHunterNavigator/Art/Scenes/"
+          for n in MidnightOrnateFel MidnightOrnateHoly MidnightOrnateSteel MidnightOrnateVoid; do
+            cp "GearHunter/Art/Frames/$n.tga" "$RUNNER_TEMP/build/GearHunterNavigator/Art/Frames/$n.tga"
+          done
+          python3 - "$RUNNER_TEMP/build/GearHunterNavigator" <<'PY'
+          import sys, pathlib, shutil
+          from tools.optimize_gearhunter_art import convert
+          addon=pathlib.Path(sys.argv[1]);cmd=shutil.which('magick') or shutil.which('convert')
+          assert cmd, 'ImageMagick missing'
+          images=sorted((addon/'Art/Scenes').rglob('*.tga')) + sorted((addon/'Art/Frames').rglob('*.tga'))
+          assert len(images)==84, f'Expected 80 scenes + 4 frames, found {len(images)}'
+          for i,p in enumerate(images,1):
+              convert(p,cmd)
+              if i%20==0 or i==len(images):print(f'Converted {i}/{len(images)}',flush=True)
+          assert len(list((addon/'Art/Scenes').rglob('*.blp')))==80
+          assert len(list((addon/'Art/Frames').rglob('*.blp')))==4
+          PY
+          cd "$RUNNER_TEMP/build"
+          test "$(find GearHunterNavigator -type f | wc -l)" -ge 219
+          zip -qr9 "$RUNNER_TEMP/GearHunterNavigator-v$VERSION.zip" GearHunterNavigator/
+          unzip -tq "$RUNNER_TEMP/GearHunterNavigator-v$VERSION.zip"
+          (cd "$RUNNER_TEMP" && sha256sum "GearHunterNavigator-v$VERSION.zip" > "GearHunterNavigator-v$VERSION.zip.sha256")
+          ls -lh "$RUNNER_TEMP/GearHunterNavigator-v$VERSION.zip"
+      - name: Publish the unified Navigator to existing GearHunter releases
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG already exists; increment version for future releases"
+            exit 1
+          fi
+          gh release create "$TAG" \
+            "$RUNNER_TEMP/GearHunterNavigator-v$VERSION.zip" \
+            "$RUNNER_TEMP/GearHunterNavigator-v$VERSION.zip.sha256" \
+            --title "Gear Hunter Navigator v$VERSION — Unified Addon" \
+            --notes-file GearHunterNavigator/RELEASE_NOTES.md \
+            --target "$GITHUB_SHA" \
+            --latest
