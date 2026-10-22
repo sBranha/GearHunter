@@ -223,6 +223,40 @@ function GHN:CreateSmartTracker()
   end
   self:UpdateSmartTracker()
 end
+-- Picking a goal in the main interface immediately changes the tracker focus.
+-- Wrap only ordinary read-only UI selection methods; keep their original outcomes.
+local originalChooseMount=GHN.ChooseMount
+if originalChooseMount then
+  GHN.ChooseMount=function(self,...)
+    local result=originalChooseMount(self,...)
+    if self.db then self.db.smartTrackerMode="Mount" end
+    if self.UpdateSmartTracker then self:UpdateSmartTracker() end
+    return result
+  end
+end
+local originalTrackQuest=GHN.TrackActiveQuest
+if originalTrackQuest then
+  GHN.TrackActiveQuest=function(self,id)
+    local ok,msg=originalTrackQuest(self,id)
+    if ok and self.db then
+      self.db.smartQuestID=id
+      self.db.smartTrackerMode="Quest"
+      if self.UpdateSmartTracker then self:UpdateSmartTracker() end
+    end
+    return ok,msg
+  end
+end
+local originalTrackGear=GHN.TrackGearTarget
+if originalTrackGear then
+  GHN.TrackGearTarget=function(self,...)
+    local ok,msg=originalTrackGear(self,...)
+    if ok and self.db then
+      self.db.smartTrackerMode="Gear"
+      if self.UpdateSmartTracker then self:UpdateSmartTracker() end
+    end
+    return ok,msg
+  end
+end
 SLASH_GHNTRACK1="/ghtrack"
 SlashCmdList.GHNTRACK=function()GHN:ToggleSmartTracker()end
 local watcher=CreateFrame("Frame")
