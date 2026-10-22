@@ -302,40 +302,63 @@ end
 -- Any failure leaves a truthful placeholder and an always-available native map button.
 function GHN:ShowMapPreview(mapID,x,y)
   if not self.mapCanvas then return end
-  for _,tile in ipairs(self.mapTiles or {})do tile:Hide()end
+  for _,tile in ipairs(self.mapTiles or {}) do tile:Hide() end
   if self.mapPin then self.mapPin:Hide() end
-  self.mapHint:SetText("World map preview unavailable. Open WoW's map below.")
-  if not (mapID and C_Map and C_Map.GetMapArtLayers and C_Map.GetMapArtLayerTextures)then return end
+  self.mapHint:SetText("Map artwork unavailable for this zone. OPEN MAP uses Blizzard's world map.")
+  if not (mapID and C_Map and C_Map.GetMapArtLayers and C_Map.GetMapArtLayerTextures) then return end
   local ok,layers=pcall(C_Map.GetMapArtLayers,mapID)
-  if not ok or type(layers)~="table" or not layers[1]then return end
-  local l=layers[1]
-  local cols=math.ceil((l.layerWidth or 0)/(l.tileWidth or 256))
-  local rows=math.ceil((l.layerHeight or 0)/(l.tileHeight or 256))
-  if cols<1 or rows<1 or cols*rows>48 then return end
-  local good,files=pcall(C_Map.GetMapArtLayerTextures,mapID,1)
-  if not good or type(files)~="table" then return end
+  if not ok or type(layers)~="table" then return end
   local w,h=342,194
-  local tw,th=w/cols,h/rows
-  local any=false
-  for i=1,math.min(#files,cols*rows)do
-    local id=files[i]
-    if id then
-      local tile=self.mapTiles[i]
-      if not tile then tile=self.mapCanvas:CreateTexture(nil,"ARTWORK");self.mapTiles[i]=tile end
-      local col=(i-1)%cols;local row=math.floor((i-1)/cols)
-      tile:ClearAllPoints();tile:SetPoint("TOPLEFT",self.mapCanvas,"TOPLEFT",col*tw,-row*th)
-      tile:SetSize(tw+.4,th+.4)
-      tile:SetTexCoord(0,1,0,1)
-      tile:SetTexture(id);tile:Show();any=true
+  local function render(layer,index)
+    if type(layer)~="table" then return false end
+    local width=tonumber(layer.layerWidth)
+    local height=tonumber(layer.layerHeight)
+    local tileWidth=tonumber(layer.tileWidth)
+    local tileHeight=tonumber(layer.tileHeight)
+    if not (width and height and tileWidth and tileHeight and width>0 and height>0 and tileWidth>0 and tileHeight>0) then return false end
+    local cols=math.ceil(width/tileWidth)
+    local rows=math.ceil(height/tileHeight)
+    if cols<1 or rows<1 or cols*rows>96 then return false end
+    local good,files=pcall(C_Map.GetMapArtLayerTextures,mapID,index)
+    if not good or type(files)~="table" or #files<cols*rows then return false end
+    local count=0
+    for i=1,cols*rows do
+      local id=files[i]
+      if type(id)=="number" and id>0 or type(id)=="string" and id~="" then count=count+1 end
     end
-  end
-  if any then
+    if count==0 then return false end
+    for i=1,cols*rows do
+      local id=files[i]
+      if id then
+        local tile=self.mapTiles[i]
+        if not tile then tile=self.mapCanvas:CreateTexture(nil,"ARTWORK");self.mapTiles[i]=tile end
+        local col=(i-1)%cols
+        local row=math.floor((i-1)/cols)
+        -- Preserve the edge tiles' proportions when a layer is not divisible by its tile size.
+        local px=col*tileWidth/width*w
+        local py=row*tileHeight/height*h
+        local pw=math.min(tileWidth,width-col*tileWidth)/width*w
+        local ph=math.min(tileHeight,height-row*tileHeight)/height*h
+        tile:ClearAllPoints()
+        tile:SetPoint("TOPLEFT",self.mapCanvas,"TOPLEFT",px,-py)
+        tile:SetSize(pw+.2,ph+.2)
+        tile:SetTexCoord(0,math.min(1,(width-col*tileWidth)/tileWidth),0,math.min(1,(height-row*tileHeight)/tileHeight))
+        tile:SetTexture(id)
+        tile:Show()
+      end
+    end
     self.mapHint:SetText("")
-    if x and y and x>=0 and x<=1 and y>=0 and y<=1 then
-      local pin=self.mapPin
-      pin:ClearAllPoints();pin:SetPoint("CENTER",self.mapCanvas,"TOPLEFT",w*x,-h*y)
-      pin:Show()
+    if self.mapPin and x and y and x>=0 and x<=1 and y>=0 and y<=1 then
+      self.mapPin:ClearAllPoints()
+      self.mapPin:SetPoint("CENTER",self.mapCanvas,"TOPLEFT",w*x,-h*y)
+      self.mapPin:Show()
     end
+    return true
+  end
+  -- Retail clients have exposed zero- and one-based art layer indices.
+  -- Try both rather than assuming the first layer is always index 1.
+  for i,layer in ipairs(layers) do
+    if render(layer,i-1) or render(layer,i) then return end
   end
 end
 function GHN:SelectedGuide()
