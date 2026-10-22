@@ -1,0 +1,27 @@
+name: Verify Gear Hunter Navigator
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'GearHunterNavigator/**'
+      - 'tools/test_smart_navigation.lua'
+      - '.github/workflows/verify-navigator.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lua parser
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq lua5.1
+      - name: Check addon contents and Lua syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q '^SmartNavigation.lua$' GearHunterNavigator/GearHunterNavigator.toc
+          test "$(find GearHunterNavigator/Art/DiscoveryIcons -name '*.tga' | wc -l)" -eq 8
+          find GearHunterNavigator -name '*.lua' -print0 | xargs -0 -n 1 luac5.1 -p
+      - name: Simulate tracker goals and user actions
+        run: lua5.1 tools/test_smart_navigation.lua
