@@ -1,4 +1,4 @@
-# Gear Hunter Navigator v0.4.7
+# Gear Hunter Navigator v0.4.8
 
 **One unified World of Warcraft Retail addon** replacing the separate Gear Hunter and MapHub downloads for new installations.
 
@@ -13,7 +13,7 @@
 - **Mount Hunter:** searchable Mount Journal, tracking and verified/source-based mount-acquisition guidance.
 - **Rares & Treasures:** documented map locations, waypoints, and the approved eight-category icons (rares, chests, elite rares, world bosses, secrets, quests, vendors and flight paths). Pins are known locations—not a live rare-spawn detector.
 - **Adventure Planner:** combines available gear/mount/discovery goals; some source databases remain incomplete.
-- **v0.4.7 layout fix:** Collections totals and notices no longer overlap controls and item rows.
+- **v0.4.8 layout fix:** Collections totals and notices no longer overlap controls and item rows.
 
 ## Install / upgrade
 
@@ -33,4 +33,4 @@ Public distribution should list **Gear Hunter Navigator** as the single current 
 
 ## Validation
 
-This build's gameplay capabilities were previously checked through offline Lua syntax and simulation tests. Final functionality and rendering must still be tested in a running WoW client.
+Offline validation covers syntax and simulated tracker data, but real-game rendering and controls must still be verified in WoW. Final functionality and rendering must still be tested in a running WoW client.
