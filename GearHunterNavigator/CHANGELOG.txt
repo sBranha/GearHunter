@@ -1,3 +1,17 @@
+Gear Hunter Navigator v0.4.8 — SMART NAVIGATION TRACKER
+- New movable, persistent on-screen tracker that automatically reads the current zone and refreshes when traveling.
+- Displays nearest unvisited known location with category, coordinates, and honest spawn-status warning.
+- Focus modes: Auto, Mount, Quest, Gear, Discoveries. Auto favors a personally selected mount, then a tracked quest, then saved gear, then discoveries.
+- Mounts: next unfinished acquisition checklist step, manual step completion, help and verified-only waypoints.
+- Quests: live objective text, tracking through the game's quest marker, and source-based Get Help.
+- Gear: saved gear target and in-game source guidance, never an invented waypoint.
+- Tracker hides while the full-screen Navigator is open, then returns to normal gameplay.
+- Right-click the existing minimap shield or use /ghtrack to toggle. Drag position and visibility persist across logins.
+- No automated movement, live-spawn claims, remote requests, or auto-completion of unverified objectives.
+HOW TO USE: Move into any zone; the tracker shows what the bundled map knows. Set Focus to a goal type.
+KNOWN LIMITATIONS: Waypoints depend on Blizzard's client/map permissions. Rare pins are documented points, not live detects.
+Real in-game rendering and game API behavior still require validation in the WoW client.
+
 Gear Hunter Navigator v0.4.7 — COLLECTIONS AND WEBSITE RELEASE
 - One installable addon: GearHunterNavigator. The old separate GearHunter and MapHub addon folders are not needed.
 - Collections: mounts/toys totals appear on their own line; search and paging, no overlapping last row.
