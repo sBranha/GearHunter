@@ -1,6 +1,6 @@
 local ADDON, GHN = ...
 _G.GearHunterNavigator = GHN
-GHN.version = "0.4.7"
+GHN.version = "0.4.8"
 GHN.EVENT_LIMIT = 40
 local defaults = { steps = {}, notes = {}, diagnostic = {}, mountID = nil, tab = "Dashboard" }
 
@@ -134,7 +134,7 @@ event:SetScript("OnEvent", function(_, name, arg1, arg2)
   end
   if name == "ADDON_LOADED" and arg1 == ADDON then
     InitializeSaved()
-    GHN:Log("INFO", "Gear Hunter Navigator 0.4.7 collection layout improvements initialized")
+    GHN:Log("INFO", "Gear Hunter Navigator 0.4.8 smart navigation initialized")
   elseif name == "PLAYER_LOGIN" then
     if not GHN.db then InitializeSaved() end
     GHN:Safe("IntelligenceProfile",function() GHN:Profile() end)
@@ -210,7 +210,7 @@ function GHN:CreateMinimapLauncher()
   btn:SetSize(33,33)
   btn:SetFrameStrata("MEDIUM")
   btn:SetFrameLevel((Minimap:GetFrameLevel() or 0)+8)
-  btn:RegisterForClicks("LeftButtonUp")
+  btn:RegisterForClicks("LeftButtonUp","RightButtonUp")
   btn:RegisterForDrag("LeftButton")
   local border=btn:CreateTexture(nil,"BACKGROUND")
   border:SetAllPoints()
@@ -250,15 +250,17 @@ function GHN:CreateMinimapLauncher()
   btn:SetScript("OnDragStart",function()dragging=true;UpdateAngle()end)
   btn:SetScript("OnUpdate",function()if dragging then UpdateAngle()end end)
   btn:SetScript("OnDragStop",function()dragging=false;UpdateAngle()end)
-  btn:SetScript("OnClick",function()
+  btn:SetScript("OnClick",function(_,button)
     if dragging then return end
-    if SlashCmdList and SlashCmdList.GHNAV then SlashCmdList.GHNAV() end
+    if button=="RightButton" and GHN.ToggleSmartTracker then GHN:ToggleSmartTracker()
+    elseif SlashCmdList and SlashCmdList.GHNAV then SlashCmdList.GHNAV() end
   end)
   btn:SetScript("OnEnter",function(f)
     if not GameTooltip then return end
     GameTooltip:SetOwner(f,"ANCHOR_LEFT")
     GameTooltip:AddLine("Gear Hunter Navigator")
     GameTooltip:AddLine("Click: Open or close full-screen Navigator",1,1,1)
+    GameTooltip:AddLine("Right-click: Show / hide Smart Tracker",.76,.84,.95)
     GameTooltip:AddLine("Drag: Move around minimap",.76,.84,.95)
     GameTooltip:Show()
   end)
