@@ -82,7 +82,13 @@ local function installFilters(map)
  hide:SetPoint("TOPLEFT",10,-256)
  if hide.text then hide.text:SetText("Hide visited") end
  hide:SetChecked(NAV.mapPinHideVisited)
- hide:SetScript("OnClick",function(w)NAV.mapPinHideVisited=w:GetChecked();NAV:RefreshMapDiscoveryPins()end)
+ hide:SetScript("OnClick",function(w)
+   NAV.mapPinHideVisited=w:GetChecked()
+   NAV.discoveryHideVisited=NAV.mapPinHideVisited
+   if NAV.db then NAV.db.discoveryHideVisited=NAV.mapPinHideVisited end
+   NAV:RefreshMapDiscoveryPins()
+   if NAV.RefreshDiscoveries then NAV:RefreshDiscoveries() end
+ end)
  btn:SetScript("OnClick",function()menu:SetShown(not menu:IsShown())end)
 end
 function NAV:InstallMapDiscoveryPins()
