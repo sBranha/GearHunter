@@ -909,7 +909,7 @@ function GHN:RefreshDiscoveries()
   local name=self:DiscoveryMapName(mapID)
   local all=self:GetZoneDiscoveries(mapID)
   local list=self:FilteredDiscoveries(mapID)
-  self.discoveryZone:SetText(name.."  |  Known discoveries")
+  self.discoveryZone:SetText(name.."  |  Known discovery locations")
   local rare,treasure,secret=0,0,0
   for _,r in ipairs(all) do
     if r.category=="Rare" then rare=rare+1
@@ -923,6 +923,7 @@ function GHN:RefreshDiscoveries()
   if self.navigatorMapIconFilters then
     for key,b in pairs(self.navigatorMapIconFilters) do b:SetChecked(self.mapPinVisible[key]~=false) end
   end
+  if self.discoveryHideVisited==nil and self.db then self.discoveryHideVisited=self.db.discoveryHideVisited==true end
   self.discoveryVisitedButton:SetLabel(self.discoveryHideVisited and "HIDE VISITED: ON" or "HIDE VISITED: OFF")
   for i,b in ipairs(self.discoveryRows) do
     local r=list[(self.discoveryPage-1)*#self.discoveryRows+i]
@@ -973,7 +974,12 @@ function GHN:RefreshDiscoveries()
       end)
       btn:SetScript("OnLeave",function()if GameTooltip then GameTooltip:Hide()end end)
       btn:SetScript("OnClick",function(b)
-        if b.record then GHN.discoverySelected=b.record;GHN:RefreshDiscoveries()end
+        if b.record then
+          GHN.discoverySelected=b.record
+          GHN:RefreshDiscoveries()
+          local ok,msg=GHN:SetDiscoveryWaypoint(b.record)
+          if not ok and GHN.discoveryInfo then GHN.discoveryInfo:SetText(msg) end
+        end
       end)
       self.discoveryMapPins[i]=btn
     end
@@ -986,7 +992,7 @@ function GHN:RefreshDiscoveries()
     btn.selectedRim:SetShown(selected and true or false)
     btn:Show()
   end
-  if #all==0 and self.mapHint then self.mapHint:SetText("No bundled discoveries for this zone. Open WoW map for ordinary map points.") end
+  if #all==0 and self.discoveryInfo then self.discoveryInfo:SetText("No verified bundled rare or treasure records for this zone yet; map artwork can still be viewed.") end
 end
 -- Display only candidates that Navigator's five-level policy and actual
 -- equipped comparison have accepted. Unknown item metadata stays unranked.
