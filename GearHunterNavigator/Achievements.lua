@@ -135,7 +135,7 @@ function GHN:CreateAchievementsPage()
     view.page=1;GHN:RefreshAchievements()
   end)
   local listener=CreateFrame("Frame")
-  for _,eventName in ipairs({"ACHIEVEMENT_EARNED","CRITERIA_UPDATE","ACHIEVEMENT_UPDATE","PLAYER_ENTERING_WORLD"}) do listener:RegisterEvent(eventName) end
+  for _,eventName in ipairs({"ACHIEVEMENT_EARNED","CRITERIA_UPDATE","PLAYER_ENTERING_WORLD"}) do listener:RegisterEvent(eventName) end
   listener:SetScript("OnEvent",function()
     view.records=nil
     if GHN.db and GHN.db.tab=="Achievements" and GHN.frame and GHN.frame:IsShown() then GHN:RefreshAchievements() end
