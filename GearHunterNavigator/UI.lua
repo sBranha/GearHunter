@@ -302,64 +302,74 @@ end
 -- Any failure leaves a truthful placeholder and an always-available native map button.
 function GHN:ShowMapPreview(mapID,x,y)
   if not self.mapCanvas then return end
-  for _,tile in ipairs(self.mapTiles or {}) do tile:Hide() end
+  self.mapTiles=self.mapTiles or {}
+  for _,tile in ipairs(self.mapTiles) do tile:Hide() end
   if self.mapPin then self.mapPin:Hide() end
-  self.mapHint:SetText("Map artwork unavailable for this zone. OPEN MAP uses Blizzard's world map.")
-  if not (mapID and C_Map and C_Map.GetMapArtLayers and C_Map.GetMapArtLayerTextures) then return end
-  local ok,layers=pcall(C_Map.GetMapArtLayers,mapID)
-  if not ok or type(layers)~="table" then return end
-  local w,h=342,194
-  local function render(layer,index)
-    if type(layer)~="table" then return false end
-    local width=tonumber(layer.layerWidth)
-    local height=tonumber(layer.layerHeight)
-    local tileWidth=tonumber(layer.tileWidth)
-    local tileHeight=tonumber(layer.tileHeight)
-    if not (width and height and tileWidth and tileHeight and width>0 and height>0 and tileWidth>0 and tileHeight>0) then return false end
-    local cols=math.ceil(width/tileWidth)
-    local rows=math.ceil(height/tileHeight)
-    if cols<1 or rows<1 or cols*rows>96 then return false end
-    local good,files=pcall(C_Map.GetMapArtLayerTextures,mapID,index)
-    if not good or type(files)~="table" or #files<cols*rows then return false end
-    local count=0
-    for i=1,cols*rows do
-      local id=files[i]
-      if type(id)=="number" and id>0 or type(id)=="string" and id~="" then count=count+1 end
-    end
-    if count==0 then return false end
-    for i=1,cols*rows do
-      local id=files[i]
-      if id then
-        local tile=self.mapTiles[i]
-        if not tile then tile=self.mapCanvas:CreateTexture(nil,"ARTWORK");self.mapTiles[i]=tile end
-        local col=(i-1)%cols
-        local row=math.floor((i-1)/cols)
-        -- Preserve the edge tiles' proportions when a layer is not divisible by its tile size.
-        local px=col*tileWidth/width*w
-        local py=row*tileHeight/height*h
-        local pw=math.min(tileWidth,width-col*tileWidth)/width*w
-        local ph=math.min(tileHeight,height-row*tileHeight)/height*h
-        tile:ClearAllPoints()
-        tile:SetPoint("TOPLEFT",self.mapCanvas,"TOPLEFT",px,-py)
-        tile:SetSize(pw+.2,ph+.2)
-        tile:SetTexCoord(0,math.min(1,(width-col*tileWidth)/tileWidth),0,math.min(1,(height-row*tileHeight)/tileHeight))
-        tile:SetTexture(id)
-        tile:Show()
+  if self.mapHint then self.mapHint:SetText("Loading zone map artwork...") end
+  if not (mapID and C_Map and C_Map.GetMapArtLayers and C_Map.GetMapArtLayerTextures) then
+    if self.mapHint then self.mapHint:SetText("Map artwork API unavailable.") end
+    return
+  end
+  local function draw(id)
+    local ok,layers=pcall(C_Map.GetMapArtLayers,id)
+    if not ok or type(layers)~="table" then return false end
+    for i,layer in ipairs(layers) do
+      local width,height=tonumber(layer.layerWidth),tonumber(layer.layerHeight)
+      local tw,th=tonumber(layer.tileWidth),tonumber(layer.tileHeight)
+      if width and height and tw and th and width>0 and height>0 and tw>0 and th>0 then
+        local cols,rows=math.ceil(width/tw),math.ceil(height/th)
+        if cols>0 and rows>0 and cols*rows<=160 then
+          for _,index in ipairs({i-1,i}) do
+            local good,files=pcall(C_Map.GetMapArtLayerTextures,id,index)
+            if good and type(files)=="table" then
+              local count=0
+              for j=1,cols*rows do
+                local file=files[j]
+                if (type(file)=="number" and file>0) or (type(file)=="string" and file~="") then count=count+1 end
+              end
+              if count>0 then
+                for j=1,cols*rows do
+                  local file=files[j]
+                  if (type(file)=="number" and file>0) or (type(file)=="string" and file~="") then
+                    local tile=self.mapTiles[j]
+                    if not tile then tile=self.mapCanvas:CreateTexture(nil,"BACKGROUND",nil,1);self.mapTiles[j]=tile end
+                    local col,row=(j-1)%cols,math.floor((j-1)/cols)
+                    local edgeW=math.min(tw,width-col*tw)
+                    local edgeH=math.min(th,height-row*th)
+                    tile:ClearAllPoints()
+                    tile:SetPoint("TOPLEFT",self.mapCanvas,"TOPLEFT",col*tw/width*342,-row*th/height*194)
+                    tile:SetSize(edgeW/width*342+.2,edgeH/height*194+.2)
+                    tile:SetTexCoord(0,edgeW/tw,0,edgeH/th)
+                    tile:SetTexture(file)
+                    tile:Show()
+                  end
+                end
+                if self.mapHint then self.mapHint:SetText("") end
+                return true
+              end
+            end
+          end
+        end
       end
     end
-    self.mapHint:SetText("")
-    if self.mapPin and x and y and x>=0 and x<=1 and y>=0 and y<=1 then
-      self.mapPin:ClearAllPoints()
-      self.mapPin:SetPoint("CENTER",self.mapCanvas,"TOPLEFT",w*x,-h*y)
-      self.mapPin:Show()
+    return false
+  end
+  local current=mapID
+  for _=1,5 do
+    if draw(current) then
+      if current==mapID and self.mapPin and x and y and x>=0 and x<=1 and y>=0 and y<=1 then
+        self.mapPin:ClearAllPoints()
+        self.mapPin:SetPoint("CENTER",self.mapCanvas,"TOPLEFT",342*x,-194*y)
+        self.mapPin:Show()
+      end
+      return
     end
-    return true
+    if not C_Map.GetMapInfo then break end
+    local ok,info=pcall(C_Map.GetMapInfo,current)
+    if not ok or not info or not info.parentMapID or info.parentMapID==0 or info.parentMapID==current then break end
+    current=info.parentMapID
   end
-  -- Retail clients have exposed zero- and one-based art layer indices.
-  -- Try both rather than assuming the first layer is always index 1.
-  for i,layer in ipairs(layers) do
-    if render(layer,i-1) or render(layer,i) then return end
-  end
+  if self.mapHint then self.mapHint:SetText("Map art unavailable for zone "..tostring(mapID)..". Open WoW map below.") end
 end
 function GHN:SelectedGuide()
   self.currentMount=GetMount(self.db and self.db.mountID)
@@ -880,10 +890,22 @@ function GHN:Refresh()
   self._refreshInProgress=false
 end
 
+function GHN:UpdateDiscoveryZone(force)
+  if not self.db or self.db.tab~="Map" then return end
+  local id=self:CurrentDiscoveryMapID()
+  if id~=self.discoveryDisplayedMapID then
+    self.discoveryDisplayedMapID=id
+    self.discoverySelected=nil
+    self.discoveryPage=1
+    self:RefreshDiscoveries()
+  elseif force then self:RefreshDiscoveries() end
+end
+
 -- v0.3.6: self-contained zone explorer powered by the existing MapHub database.
 function GHN:RefreshDiscoveries()
   if not self.discoveryRows or not self.db or self.db.tab~="Map" then return end
   local mapID=self:CurrentDiscoveryMapID()
+  self.discoveryDisplayedMapID=mapID
   local name=self:DiscoveryMapName(mapID)
   local all=self:GetZoneDiscoveries(mapID)
   local list=self:FilteredDiscoveries(mapID)
@@ -929,7 +951,7 @@ function GHN:RefreshDiscoveries()
     for _,b in ipairs(self.discoveryMapPins) do b:Hide() end
   else self.discoveryMapPins={} end
   -- Plot up to 45 filtered map pins on the native map preview; does not alter WorldMapFrame.
-  for i=1,math.min(#list,45) do
+  for i=1,math.min(#list,160) do
     local r=list[i]
     local btn=self.discoveryMapPins[i]
     if not btn then
@@ -1816,7 +1838,7 @@ function GHN:CreateUI()
     Button(card,"< PREV",19,-494,139,28,function()GHN.discoveryPage=math.max(1,(GHN.discoveryPage or 1)-1);GHN:RefreshDiscoveries()end,"dark")
     Button(card,"NEXT >",167,-494,139,28,function()GHN.discoveryPage=(GHN.discoveryPage or 1)+1;GHN:RefreshDiscoveries()end,"dark")
     self.discoveryVisitedButton=Button(card,"HIDE VISITED: OFF",317,-494,180,28,function()
-      GHN.discoveryHideVisited=not GHN.discoveryHideVisited;GHN.discoveryPage=1;GHN:RefreshDiscoveries()
+      GHN.discoveryHideVisited=not GHN.discoveryHideVisited;if GHN.db then GHN.db.discoveryHideVisited=GHN.discoveryHideVisited end;GHN.discoveryPage=1;GHN:RefreshDiscoveries()
     end,"dark")
     self.discoveryMarkButton=Button(card,"MARK VISITED",503,-494,163,28,function()
       if GHN.discoverySelected then GHN:ToggleDiscoveryVisited(GHN.discoverySelected);GHN:RefreshDiscoveries()end
