@@ -1,6 +1,6 @@
 local ADDON, GHN = ...
 _G.GearHunterNavigator = GHN
-GHN.version = "0.4.8"
+GHN.version = "0.5.3"
 GHN.EVENT_LIMIT = 40
 local defaults = { steps = {}, notes = {}, diagnostic = {}, mountID = nil, tab = "Dashboard" }
 
@@ -114,6 +114,8 @@ event:RegisterEvent("NEW_TOY_ADDED")
 
 event:RegisterEvent("PLAYER_ENTERING_WORLD")
 event:RegisterEvent("ZONE_CHANGED_NEW_AREA")
+event:RegisterEvent("ZONE_CHANGED")
+event:RegisterEvent("ZONE_CHANGED_INDOORS")
 event:RegisterEvent("COMPANION_UPDATE")
 event:RegisterEvent("BAG_UPDATE_DELAYED")
 event:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
@@ -134,16 +136,16 @@ event:SetScript("OnEvent", function(_, name, arg1, arg2)
   end
   if name == "ADDON_LOADED" and arg1 == ADDON then
     InitializeSaved()
-    GHN:Log("INFO", "Gear Hunter Navigator 0.4.8 smart navigation initialized")
+    GHN:Log("INFO", "Gear Hunter Navigator 0.5.3 smart navigation initialized")
   elseif name == "PLAYER_LOGIN" then
     if not GHN.db then InitializeSaved() end
     GHN:Safe("IntelligenceProfile",function() GHN:Profile() end)
     GHN:Safe("Discovery icon filters",function() GHN:InitializeDiscoveryFilters() end)
     GHN:Safe("CreateUI",function() GHN:CreateUI() end)
     GHN:Safe("MinimapLauncher",function() GHN:CreateMinimapLauncher() end)
-  elseif (name == "PLAYER_ENTERING_WORLD" or name == "ZONE_CHANGED_NEW_AREA") and GHN.db then
+  elseif (name == "PLAYER_ENTERING_WORLD" or name == "ZONE_CHANGED_NEW_AREA" or name == "ZONE_CHANGED" or name == "ZONE_CHANGED_INDOORS") and GHN.db then
     GHN:Safe("RouteProgress",function() GHN:UpdateMeasuredRoute() end)
-    if GHN.db.tab=="Map" then GHN.discoverySelected=nil;GHN.discoveryPage=1;GHN:Safe("Zone Explorer",function()GHN:RefreshDiscoveries()end)end
+    if GHN.db.tab=="Map" and GHN.frame and GHN.frame:IsShown() then GHN:Safe("Zone Explorer",function()GHN:UpdateDiscoveryZone(true)end)end
     GHN:Safe("CollectionProgress",function() GHN:CheckCollectedGoal() end)
   elseif (name == "PLAYER_LEVEL_UP" or name == "UPDATE_EXPANSION_LEVEL") and GHN.db then
     -- A level change changes the five-level eligibility window; never show
@@ -193,13 +195,24 @@ event:SetScript("OnEvent", function(_, name, arg1, arg2)
 end)
 
 local elapsed=0
+local zoneElapsed=0
 event:SetScript("OnUpdate",function(_,dt)
-  if not GHN.activeRoute then return end
-  elapsed=elapsed+dt
-  if elapsed >= 5 then
-    elapsed=0
-    GHN:Safe("RouteTick",function() GHN:UpdateMeasuredRoute() end)
+  if GHN.db and GHN.db.tab=="Map" and GHN.frame and GHN.frame:IsShown() then
+    zoneElapsed=zoneElapsed+dt
+    if zoneElapsed>=2 then
+      zoneElapsed=0
+      GHN:Safe("Auto zone map",function() GHN:UpdateDiscoveryZone(false) end)
+    end
+  else
+    zoneElapsed=0
   end
+  if GHN.activeRoute then
+    elapsed=elapsed+dt
+    if elapsed>=5 then
+      elapsed=0
+      GHN:Safe("RouteTick",function() GHN:UpdateMeasuredRoute() end)
+    end
+  else elapsed=0 end
 end)
 
 -- Native, click-only launcher. Never controls the player's character.
