@@ -392,8 +392,8 @@ function GHN:Select(tab)
   if self.db.tab=="Gear" and tab~="Gear" then self.lastPreviewMap=nil end
   self.db.tab=tab
   if self.mainCenter and self.mainRight then
-    self.mainCenter:SetWidth((tab=="Character" or tab=="Gear Hunter" or tab=="Quests" or tab=="Reputation" or tab=="Collections") and 1102 or 716)
-    self.mainRight:SetShown(tab~="Character" and tab~="Gear Hunter" and tab~="Quests" and tab~="Reputation" and tab~="Collections")
+    self.mainCenter:SetWidth((tab=="Character" or tab=="Gear Hunter" or tab=="Quests" or tab=="Reputation" or tab=="Collections" or tab=="Achievements") and 1102 or 716)
+    self.mainRight:SetShown(tab~="Character" and tab~="Gear Hunter" and tab~="Quests" and tab~="Reputation" and tab~="Collections" and tab~="Achievements")
   end
   for name,p in pairs(self.pages)do if name==tab then p:Show()else p:Hide()end end
   if self.navigatorDiscoveryLegend then self.navigatorDiscoveryLegend:SetShown(tab=="Map") end
@@ -885,6 +885,9 @@ function GHN:Refresh()
   if self.db.tab=="Map" then self:Safe("MapHub explorer",function()self:RefreshDiscoveries()end) end
   if self.db.tab=="Quests" or self.db.tab=="Reputation" or self.db.tab=="Collections" then
     self:Safe("Quest/Reputation/Collections",function()self:RefreshProgressPage()end)
+  end
+  if self.db.tab=="Achievements" and self.RefreshAchievements then
+    self:Safe("Achievements",function()self:RefreshAchievements()end)
   end
   if self.db.tab=="Gear Hunter" and self.GearEngine and self.GearEngine.frame and self.GearEngine.frame:IsShown() then self:Safe("Original Gear Hunter",function() self.GearEngine:Refresh() end) end
   self._refreshInProgress=false
@@ -1892,9 +1895,9 @@ function GHN:CreateUI()
   }) do
     self:CreateProgressPage(entry[1],entry[2],entry[3])
   end
+  if self.CreateAchievementsPage then self:CreateAchievementsPage() end
   local placeholder={
     ["Dungeons & Raids"]={"Raids and Dungeons","Use Gear Hunter's Boss Loot page for current encounters and known loot."},
-    ["Achievements"]={"Achievements","Achievement goals and progress are not yet integrated."},
   }
   for tab,info in pairs(placeholder)do
     local card=PageCard(tab,info[1],info[2])
