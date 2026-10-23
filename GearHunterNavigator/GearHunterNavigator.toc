@@ -1,8 +1,8 @@
 ## Interface: 120100, 120105
-## Title: |cffd6bb78Gear Hunter Navigator|r |cffaaaaaa(0.5.4)|r
+## Title: |cffd6bb78Gear Hunter Navigator|r |cffaaaaaa(0.5.5)|r
 ## Notes: One addon: original Gear Hunter UI inside Navigator; plus mounts, upgrade discovery, and rare/treasure maps.
 ## Author: Gear Hunter Project
-## Version: 0.5.4
+## Version: 0.5.5
 ## SavedVariables: GearHunterNavigatorDB
 ## IconTexture: Interface\AddOns\GearHunterNavigator\Art\UIIcons\map.tga
 Core.lua
