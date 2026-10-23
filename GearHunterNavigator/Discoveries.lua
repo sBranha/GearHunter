@@ -2,7 +2,15 @@ local ADDON, GHN = ...
 -- Our independent Navigator explorer, reading our bundled MapHub location data.
 -- Known spawn points are not live detection. Unknown means unknown (not uncollected).
 local function zoneKey(name)
-  return type(name)=="string" and name:lower():gsub("[^%w]","") or nil
+  if type(name)~="string" then return nil end
+  return name:lower():gsub("[^%w]","")
+end
+local zoneAliases={azuremystisland="azuremystisle",bloodmystisland="bloodmystisle"}
+local function rareDataFor(mapID,name)
+  local data=GHN.WorldRareLocations
+  if type(data)~="table" then return nil end
+  local key=zoneKey(name)
+  return data[mapID] or data[tostring(mapID)] or (key and (data[key] or data[zoneAliases[key]]))
 end
 function GHN:CurrentDiscoveryMapID()
   if not (C_Map and C_Map.GetBestMapForUnit) then return nil end
@@ -17,8 +25,10 @@ function GHN:DiscoveryMapName(id)
   return id and ("Map "..id) or "Zone unavailable"
 end
 local mapIndex
+local rareIndex={}
 local function rebuild()
   mapIndex={}
+  rareIndex={}
   for _,r in ipairs(GHN.CuratedLocations or {}) do
     if type(r.mapID)=="number" and type(r.x)=="number" and type(r.y)=="number"
       and r.x>=0 and r.x<=100 and r.y>=0 and r.y<=100 then
@@ -35,21 +45,29 @@ function GHN:GetZoneDiscoveries(mapID)
   local function push(r)
     if r and type(r.name)=="string" and type(r.x)=="number" and type(r.y)=="number"
       and r.x>=0 and r.x<=100 and r.y>=0 and r.y<=100 then
-      local key=(r.name:lower():gsub("[^%w]",""))..":"..math.floor(r.x*10+.5)..":"..math.floor(r.y*10+.5)
+      local key=tostring(self:DiscoveryCategoryKey(r.category) or r.category or "")..":"..(r.name:lower():gsub("[^%w]",""))..":"..math.floor(r.x*10+.5)..":"..math.floor(r.y*10+.5)
       if not seen[key] then seen[key]=true;items[#items+1]=r end
     end
   end
   for _,r in ipairs(mapIndex[mapID] or {}) do push(r) end
-  local key=zoneKey(self:DiscoveryMapName(mapID))
-  local data=GHN.WorldRareLocations and (GHN.WorldRareLocations[mapID] or GHN.WorldRareLocations[tostring(mapID)] or GHN.WorldRareLocations[key])
-  for _,r in ipairs(type(data)=="table" and data or {}) do
-    local npc,x,y,name=r[1],r[2],r[3],r[4]
-    if type(npc)=="number" and type(name)=="string" then
-      push({id=("rare:%d:%d:%.2f:%.2f"):format(mapID,npc,x or 0,y or 0),mapID=mapID,x=x,y=y,
-        name=name,category="Rare",npcID=npc,source="AllTheThings (MIT; via MapHub)",
-        description="Documented possible spawn. Presence, phase and availability are not confirmed."})
+  local data=rareDataFor(mapID,self:DiscoveryMapName(mapID))
+  if not rareIndex[mapID] then
+    local records={}
+    for _,r in ipairs(type(data)=="table" and data or {}) do
+      local npc,x,y,name=r[1],r[2],r[3],r[4]
+      if type(npc)=="number" and type(x)=="number" and type(y)=="number"
+        and x>=0 and x<=100 and y>=0 and y<=100 and type(name)=="string" then
+        records[#records+1]={
+          id=("rare:%d:%d:%.2f:%.2f"):format(mapID,npc,x,y),
+          mapID=mapID,x=x,y=y,name=name,category="Rare",npcID=npc,
+          source="AllTheThings (MIT; via MapHub)",
+          description="Documented possible spawn. Presence, phase and availability are not confirmed."
+        }
+      end
     end
+    rareIndex[mapID]=records
   end
+  for _,r in ipairs(rareIndex[mapID]) do push(r) end
   return items
 end
 function GHN:DiscoveryKey(r)
@@ -100,13 +118,17 @@ function GHN:FilteredDiscoveries(mapID)
   end
   table.sort(filtered,function(a,b)
     if a._distance and b._distance and math.abs(a._distance-b._distance)>.001 then return a._distance<b._distance end
-    if a.category~=b.category then return a.category<b.category end
-    return a.name<b.name
+    local ac,bc=tostring(a.category or ""),tostring(b.category or "")
+    if ac~=bc then return ac<bc end
+    return tostring(a.name or "")<tostring(b.name or "")
   end)
   return filtered
 end
 function GHN:SetDiscoveryWaypoint(r)
-  if not r or not r.mapID or not r.x or not r.y then return false,"Choose a known location first." end
+  if not r or type(r.mapID)~="number" or type(r.x)~="number" or type(r.y)~="number"
+    or r.x<0 or r.x>100 or r.y<0 or r.y>100 then
+    return false,"Choose a valid known map location first."
+  end
   if InCombatLockdown and InCombatLockdown() then return false,"Unavailable in combat." end
   if not (C_Map and C_Map.SetUserWaypoint and UiMapPoint and UiMapPoint.CreateFromCoordinates) then
     return false,"World map waypoint API is unavailable." end
