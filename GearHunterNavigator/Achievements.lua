@@ -23,13 +23,22 @@ local function tracked(id)
   end
   return false
 end
+local function completedSafely(id,reported)
+  if reported==true then return true end
+  if type(IsAchievementComplete)=="function" then
+    local ok,result=pcall(IsAchievementComplete,id)
+    if ok then return result==true end
+  end
+  return false
+end
 local function scan()
   local entries,seen={},{}
   if type(GetCategoryList)~="function" or type(GetCategoryNumAchievements)~="function" then return entries,false end
   local ok,categories=pcall(GetCategoryList)
   if not ok or type(categories)~="table" then return entries,false end
   for _,category in ipairs(categories) do
-    local name=type(GetCategoryInfo)=="function" and GetCategoryInfo(category) or tostring(category)
+    local okName,name=type(GetCategoryInfo)=="function" and pcall(GetCategoryInfo,category) or false,nil
+    if not okName then name=tostring(category) end
     local okCount,count=pcall(GetCategoryNumAchievements,category)
     count=okCount and tonumber(count) or 0
     for index=1,count do
@@ -39,7 +48,7 @@ local function scan()
         local okDetail,aid,title,points,completed,month,day,year,description,flags,icon=pcall(GetAchievementInfo,id)
         if not okDetail then aid=nil end
         if aid and title and title~="" then
-          entries[#entries+1]={id=id,name=title,points=points or 0,done=completed==true or (type(IsAchievementComplete)=="function" and IsAchievementComplete(id)==true),
+          entries[#entries+1]={id=id,name=title,points=points or 0,done=completedSafely(id,completed),
             date=(completed and month and day and year) and string.format("%02d/%02d/%04d",month,day,year) or nil,
             description=description or "",category=name or "Achievements",icon=icon}
         end
