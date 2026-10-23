@@ -37,8 +37,11 @@ local function scan()
   local ok,categories=pcall(GetCategoryList)
   if not ok or type(categories)~="table" then return entries,false end
   for _,category in ipairs(categories) do
-    local okName,name=type(GetCategoryInfo)=="function" and pcall(GetCategoryInfo,category) or false,nil
-    if not okName then name=tostring(category) end
+    local name=tostring(category)
+    if type(GetCategoryInfo)=="function" then
+      local okName,categoryName=pcall(GetCategoryInfo,category)
+      if okName and type(categoryName)=="string" then name=categoryName end
+    end
     local okCount,count=pcall(GetCategoryNumAchievements,category)
     count=okCount and tonumber(count) or 0
     for index=1,count do
