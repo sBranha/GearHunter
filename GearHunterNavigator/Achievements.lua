@@ -19,13 +19,14 @@ local function scan()
   if not ok or type(categories)~="table" then return entries,false end
   for _,category in ipairs(categories) do
     local name=type(GetCategoryInfo)=="function" and GetCategoryInfo(category) or tostring(category)
-    local count=GetCategoryNumAchievements(category)
-    count=tonumber(count) or 0
+    local okCount,count=pcall(GetCategoryNumAchievements,category)
+    count=okCount and tonumber(count) or 0
     for index=1,count do
-      local id=GetAchievementInfo(category,index)
-      if type(id)=="number" and not seen[id] then
+      local okEntry,id=pcall(GetAchievementInfo,category,index)
+      if okEntry and type(id)=="number" and not seen[id] then
         seen[id]=true
-        local aid,title,points,completed,month,day,year,description,flags,icon=GetAchievementInfo(id)
+        local okDetail,aid,title,points,completed,month,day,year,description,flags,icon=pcall(GetAchievementInfo,id)
+        if not okDetail then aid=nil end
         if aid and title and title~="" then
           entries[#entries+1]={id=id,name=title,points=points or 0,done=completed==true,
             date=(completed and month and day and year) and string.format("%02d/%02d/%04d",month,day,year) or nil,
@@ -46,12 +47,20 @@ function GHN:CreateAchievementsPage()
   p:SetBackdropColor(.015,.04,.07,.97)
   text(p,"YOUR WORLD OF WARCRAFT ACHIEVEMENTS",18,-15,920,30,20)
   text(p,"Search the achievements loaded by your WoW client. Earned and incomplete results are marked.",20,-52,990,27,13)
-  local view={page=1,filter="All",selected=nil,records={},results={}}
+  local view={page=1,filter="All",category="All",selected=nil,records=nil,results={}}
   self.achievementView=view
   local search=CreateFrame("EditBox",nil,p,"InputBoxTemplate")
   search:SetPoint("TOPLEFT",p,"TOPLEFT",25,-94);search:SetSize(390,28)
   search:SetAutoFocus(false);search:SetMaxLetters(90)
   view.search=search
+  view.categoryButton=button(p,"ALL CATEGORIES",857,-94,192,30,function()
+    local options=view.categories or {"All"}
+    local nextIndex=1
+    for i,name in ipairs(options) do if name==view.category then nextIndex=i%#options+1;break end end
+    view.category=options[nextIndex]
+    view.categoryButton:SetText(view.category=="All" and "ALL CATEGORIES" or view.category:sub(1,22))
+    view.page=1;GHN:RefreshAchievements()
+  end)
   view.summary=text(p,"Loading achievements...",22,-135,1015,24,13)
   view.rows={}
   local detail=CreateFrame("Frame",nil,p,"BackdropTemplate")
@@ -99,6 +108,13 @@ function GHN:CreateAchievementsPage()
     view.filterButton:SetText(string.upper(view.filter))
     view.page=1;GHN:RefreshAchievements()
   end)
+  local listener=CreateFrame("Frame")
+  for _,eventName in ipairs({"ACHIEVEMENT_EARNED","CRITERIA_UPDATE","ACHIEVEMENT_UPDATE","PLAYER_ENTERING_WORLD"}) do listener:RegisterEvent(eventName) end
+  listener:SetScript("OnEvent",function()
+    view.records=nil
+    if GHN.db and GHN.db.tab=="Achievements" and GHN.frame and GHN.frame:IsShown() then GHN:RefreshAchievements() end
+  end)
+  view.eventListener=listener
 end
 function GHN:RefreshAchievements()
   local view=self.achievementView
@@ -107,12 +123,22 @@ function GHN:RefreshAchievements()
     local ok,records,available=pcall(scan)
     view.records=ok and records or {}
     view.available=ok and available
+    local categories,seenCategories={"All"},{}
+    for _,r in ipairs(view.records) do
+      if r.category and not seenCategories[r.category] then seenCategories[r.category]=true;categories[#categories+1]=r.category end
+    end
+    table.sort(categories,function(a,b)
+      if a=="All" then return true elseif b=="All" then return false end
+      return a:lower()<b:lower()
+    end)
+    view.categories=categories
   end
   local query=(view.search:GetText() or ""):lower():match("^%s*(.-)%s*$")
   local earned,results=0,{}
   for _,r in ipairs(view.records) do
     if r.done then earned=earned+1 end
     if (view.filter=="All" or (view.filter=="Earned")==r.done) and
+       (view.category=="All" or view.category==r.category) and
        (query=="" or r.name:lower():find(query,1,true) or tostring(r.id):find(query,1,true)) then
       results[#results+1]=r
     end
@@ -144,8 +170,8 @@ function GHN:RefreshAchievements()
       if n>0 then
         lines[#lines+1]="OBJECTIVES:"
         for i=1,math.min(n,9) do
-          local desc,_,done,quantity,required=GetAchievementCriteriaInfo(r.id,i)
-          if desc then
+          local okCriteria,desc,_,done,quantity,required=pcall(GetAchievementCriteriaInfo,r.id,i)
+          if okCriteria and desc then
             lines[#lines+1]=(done and "[Done] " or "[ ] ")..tostring(desc):sub(1,49)..
               (type(quantity)=="number" and type(required)=="number" and required>1 and (" ("..quantity.."/"..required..")") or "")
           end
