@@ -1,14 +1,14 @@
-# Gear Hunter Navigator v0.5.3
+# Gear Hunter Navigator v0.5.4
 
-Complete unified addon with original Gear Hunter artwork and the Navigator map fixes.
+## Achievements — Live World of Warcraft journal
 
-- Restored working retail zone-map tile rendering with correct map-art layer indices and parent-map fallback.
-- Automatic zone and subzone discovery refresh while the map is visible.
-- Increased discovery markers to 160.
-- Rare dataset lookups by map ID or normalized zone name, with cached valid coordinates.
-- Fixed duplicate handling across discovery categories.
-- Map markers can set Blizzard waypoints.
-- Synchronized and persisted Hide Visited filters.
-- Improved empty-zone messaging and waypoint validation.
+- New searchable Achievements page reads the logged-in WoW client's achievement records.
+- Search by achievement name or numeric ID.
+- Filter All, Earned, or Incomplete.
+- Browse completion status, earned date when available, achievement points and descriptions.
+- Select an achievement to inspect its available criteria and progress.
+- Track an achievement using Blizzard's API when available.
+- Open the native Blizzard Achievements interface, or refresh the list.
+- Preserves the v0.5.3 zone-map artwork repair, automatic rare/treasure zone updates, waypoints, and Hide Visited filters.
 
-Known locations are possible rare spawns, not guaranteed live sightings. The ZIP is built by GitHub Actions from this repository.
+The GitHub Actions workflow validates and packages the complete addon. In-game achievement APIs and behavior require a running WoW client for final verification.
