@@ -12,6 +12,17 @@ local function button(parent,label,x,y,w,h,click)
   b:SetPoint("TOPLEFT",parent,"TOPLEFT",x,y);b:SetSize(w,h);b:SetText(label)
   b:SetScript("OnClick",click);return b
 end
+local function tracked(id)
+  if type(IsTrackedAchievement)=="function" then
+    local ok,value=pcall(IsTrackedAchievement,id)
+    if ok then return value==true end
+  end
+  if type(GetTrackedAchievements)=="function" then
+    local ok,ids=pcall(GetTrackedAchievements)
+    if ok and type(ids)=="table" then for _,v in pairs(ids) do if v==id then return true end end end
+  end
+  return false
+end
 local function scan()
   local entries,seen={},{}
   if type(GetCategoryList)~="function" or type(GetCategoryNumAchievements)~="function" then return entries,false end
@@ -28,7 +39,7 @@ local function scan()
         local okDetail,aid,title,points,completed,month,day,year,description,flags,icon=pcall(GetAchievementInfo,id)
         if not okDetail then aid=nil end
         if aid and title and title~="" then
-          entries[#entries+1]={id=id,name=title,points=points or 0,done=completed==true,
+          entries[#entries+1]={id=id,name=title,points=points or 0,done=completed==true or (type(IsAchievementComplete)=="function" and IsAchievementComplete(id)==true),
             date=(completed and month and day and year) and string.format("%02d/%02d/%04d",month,day,year) or nil,
             description=description or "",category=name or "Achievements",icon=icon}
         end
@@ -81,10 +92,13 @@ function GHN:CreateAchievementsPage()
   button(p,"NEXT",165,-517,135,32,function()view.page=view.page+1;GHN:RefreshAchievements()end)
   button(p,"TRACK ACHIEVEMENT",315,-517,208,32,function()
     if not view.selected then return end
-    if type(AddTrackedAchievement)=="function" then
-      local ok=pcall(AddTrackedAchievement,view.selected.id)
-      view.notice:SetText(ok and "Achievement tracking requested." or "WoW did not allow tracking this achievement.")
+    local already=tracked(view.selected.id)
+    local action=already and RemoveTrackedAchievement or AddTrackedAchievement
+    if type(action)=="function" then
+      local ok=pcall(action,view.selected.id)
+      view.notice:SetText(ok and (already and "Untrack requested." or "Tracking requested.") or "WoW did not allow this tracking change.")
     else view.notice:SetText("Achievement tracking is not available in this WoW client.") end
+    GHN:RefreshAchievements()
   end)
   button(p,"OPEN BLIZZARD ACHIEVEMENTS",537,-517,294,32,function()
     if InCombatLockdown and InCombatLockdown() then view.notice:SetText("Open Blizzard achievements outside combat.");return end
@@ -164,7 +178,7 @@ function GHN:RefreshAchievements()
     local r=view.selected
     local lines={r.name,"Achievement ID: "..r.id,"Category: "..tostring(r.category),
       r.done and ("EARNED"..(r.date and " on "..r.date or "")) or "NOT YET EARNED",
-      "Points: "..tostring(r.points),"",r.description,""}
+      "Points: "..tostring(r.points),tracked(r.id) and "Currently tracked" or "Not tracked","",r.description,""}
     if type(GetAchievementNumCriteria)=="function" and type(GetAchievementCriteriaInfo)=="function" then
       local n=tonumber(GetAchievementNumCriteria(r.id)) or 0
       if n>0 then
