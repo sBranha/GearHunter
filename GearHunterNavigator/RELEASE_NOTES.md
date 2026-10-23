@@ -1,36 +1,14 @@
-# Gear Hunter Navigator v0.4.8
+# Gear Hunter Navigator v0.5.3
 
-**One unified World of Warcraft Retail addon** replacing the separate Gear Hunter and MapHub downloads for new installations.
+Complete unified addon with original Gear Hunter artwork and the Navigator map fixes.
 
-## Included in this release
+- Restored working retail zone-map tile rendering with correct map-art layer indices and parent-map fallback.
+- Automatic zone and subzone discovery refresh while the map is visible.
+- Increased discovery markers to 160.
+- Rare dataset lookups by map ID or normalized zone name, with cached valid coordinates.
+- Fixed duplicate handling across discovery categories.
+- Map markers can set Blizzard waypoints.
+- Synchronized and persisted Hide Visited filters.
+- Improved empty-zone messaging and waypoint validation.
 
-- **Original Gear Hunter design:** ornate blue-and-gold Midnight frame, centered rotatable character and equipment views, gear search, boss loot, upgrade and farming tools.
-- **Upgrade finder:** class/equipment eligibility checks; show improvements of at least +1 item level. Required-level window defaults to current character level +5, with an optional +10 setting. Items with unknown requirements may be withheld.
-- **Class-aware leveling:** character/quest-log-based guidance with early class tips. Not a complete algorithmically optimized leveling route.
-- **Quest help:** displays active quest objectives and provides next-step assistance from those objectives.
-- **Reputation:** displays available faction standings and Renown information.
-- **Collections:** collected mounts and toys, search, collection filters, pagination, and Toy Box controls.
-- **Mount Hunter:** searchable Mount Journal, tracking and verified/source-based mount-acquisition guidance.
-- **Rares & Treasures:** documented map locations, waypoints, and the approved eight-category icons (rares, chests, elite rares, world bosses, secrets, quests, vendors and flight paths). Pins are known locations—not a live rare-spawn detector.
-- **Adventure Planner:** combines available gear/mount/discovery goals; some source databases remain incomplete.
-- **v0.4.8 layout fix:** Collections totals and notices no longer overlap controls and item rows.
-
-## Install / upgrade
-
-1. Exit World of Warcraft completely.
-2. Remove only the obsolete `_retail_/Interface/AddOns/GearHunter` and `_retail_/Interface/AddOns/MapHub` folders if installed. Replace the old `GearHunterNavigator` folder.
-3. Extract the **single** `GearHunterNavigator` folder from this release ZIP into `_retail_/Interface/AddOns/`.
-4. Keep your `WTF` folder and SavedVariables; do not delete them.
-5. Start WoW, enable **Gear Hunter Navigator**, and enter `/ghnav`.
-
-**Upgrade note:** The new combined addon uses its own `GearHunterNavigatorDB` saved variables. Existing Gear Hunter and MapHub settings are not guaranteed to migrate automatically.
-
-## Website information
-
-Website: https://gearhunter.net
-Source and releases: https://github.com/sBranha/GearHunter
-Public distribution should list **Gear Hunter Navigator** as the single current addon. Preserve old Gear Hunter and MapHub release archives as history instead of deleting them.
-
-## Validation
-
-Offline validation covers syntax and simulated tracker data, but real-game rendering and controls must still be verified in WoW. Final functionality and rendering must still be tested in a running WoW client.
+Known locations are possible rare spawns, not guaranteed live sightings. The ZIP is built by GitHub Actions from this repository.
